@@ -18,3 +18,9 @@ npm list
 git add .
 git commit -m "작업 내용 간단히 작성"
 git push -u origin tata
+
+-------------------------------------------------
+terminal로 backend 폴더로 이동 후 다음을 순서대로 실행
+
+1. echo "DATABASE_URL=mysql+pymysql://root:1234@localhost:3306/fastapi_db?charset=utf8mb4" > .env
+2. 'root:1234' 부분을 본인의 DB상황에 맞게 수정
