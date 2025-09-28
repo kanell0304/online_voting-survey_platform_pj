@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from backend.app.database.database import Base
+from backend.app.database.base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Text, Enum, TIMESTAMP, func
+from sqlalchemy import Text, Enum, TIMESTAMP, func, ForeignKey
 from datetime import datetime
 from typing import List, Optional
 import enum
@@ -22,7 +22,7 @@ class SurveyQuestion(Base):
 
     question_id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
-    survey_id: Mapped[int] = mapped_column(nullable=False, index=True)
+    survey_id: Mapped[int] = mapped_column(ForeignKey("surveys.survey_id"), nullable=False, index=True)
 
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     question_type: Mapped[QuestionType] = mapped_column(Enum(QuestionType), nullable=False)
@@ -42,6 +42,9 @@ class SurveyQuestion(Base):
         passive_deletes=True,
         order_by="SurveyOption.option_id"
     )
+    
+    # 질문 N : 1 설문
+    survey: Mapped["Surveys"] = relationship("Surveys", back_populates="questions")
 
     def __repr__(self) -> str:
         return f"<SurveyQuestion id={self.question_id} survey_id={self.survey_id} type={self.question_type}>"

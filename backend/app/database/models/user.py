@@ -1,4 +1,4 @@
-from backend.app.database.database import Base
+from backend.app.database.base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from sqlalchemy import String, TIMESTAMP, func
@@ -15,4 +15,5 @@ class User(Base):
     created_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), nullable=True)
 
     #1:M관계
-    survey:Mapped[List["Survey"]]=relationship("Survey", back_populates="user", cascade="all, delete-orphan")
+    survey:Mapped[List["Surveys"]]=relationship("Surveys", back_populates="user", cascade="all, delete-orphan")
+    responses:Mapped[List["Response"]]=relationship("Response", cascade="all, delete-orphan")
