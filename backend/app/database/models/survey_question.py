@@ -7,7 +7,6 @@ from datetime import datetime
 from typing import List, Optional
 import enum
 
-
 class QuestionType(str, enum.Enum):
     single_choice = "single_choice"
     multiple_choice = "multiple_choice"
@@ -16,23 +15,15 @@ class QuestionType(str, enum.Enum):
     rating         = "rating"
     yes_no         = "yes_no"
 
-
 class SurveyQuestion(Base):
     __tablename__ = "survey_questions"
 
     question_id: Mapped[int] = mapped_column(primary_key=True, index=True)
-
     survey_id: Mapped[int] = mapped_column(ForeignKey("surveys.survey_id"), nullable=False, index=True)
-
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     question_type: Mapped[QuestionType] = mapped_column(Enum(QuestionType), nullable=False)
-
-    created_at: Mapped[Optional[datetime]] = mapped_column(
-        TIMESTAMP, server_default=func.now(), nullable=True
-    )
-    updated_at: Mapped[Optional[datetime]] = mapped_column(
-        TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=True
-    )
+    created_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), nullable=True)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=True)
 
     # 질문 1 : N 옵션
     options: Mapped[List["SurveyOption"]] = relationship(

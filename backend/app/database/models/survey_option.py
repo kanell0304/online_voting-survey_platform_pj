@@ -13,12 +13,8 @@ class SurveyOption(Base):
     option_id: Mapped[int] = mapped_column(primary_key=True, index=True)
     question_id: Mapped[int] = mapped_column(ForeignKey("survey_questions.question_id"), nullable=False, index=True)
     option_text: Mapped[str] = mapped_column(String(500), nullable=False)
-    created_at: Mapped[Optional[datetime]] = mapped_column(
-        TIMESTAMP, server_default=func.now(), nullable=True
-    )
-    updated_at: Mapped[Optional[datetime]] = mapped_column(
-        TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=True
-    )
+    created_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), nullable=True)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=True)
 
     # 옵션 N : 1 질문
     question: Mapped["SurveyQuestion"] = relationship(
