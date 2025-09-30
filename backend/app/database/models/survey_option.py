@@ -6,7 +6,7 @@ from sqlalchemy import String, TIMESTAMP, func, ForeignKey
 from datetime import datetime
 from typing import Optional
 
-
+# 설문 질문 옵션 ex) 텍스트, 4지선다, 예/아니오
 class SurveyOption(Base):
     __tablename__ = "survey_options"
 
