@@ -18,3 +18,4 @@ class Surveys(Base):
     tags = relationship("Tag", secondary="survey_tags", back_populates="surveys")
     questions: Mapped[List["SurveyQuestion"]] = relationship("SurveyQuestion", back_populates="survey", cascade="all, delete-orphan")
     responses: Mapped[List["Response"]] = relationship("Response", cascade="all, delete-orphan")
+    email_log: Mapped[List["EmailLog"]] = relationship("EmailLog", back_populates="surveys", cascade="all, delete-orphan")
