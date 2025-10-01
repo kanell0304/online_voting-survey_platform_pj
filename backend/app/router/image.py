@@ -2,8 +2,7 @@ from fastapi import APIRouter, UploadFile, File, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.database.database import get_db
 from backend.app.database.schemas.image import ImageResponse
-
-from backend.app.service.image import ImageService
+from backend.app.service.image_service import ImageService
 
 router = APIRouter(prefix="/image", tags=["Image"])
 
