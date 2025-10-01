@@ -19,7 +19,6 @@ class ImageService:
 
     @staticmethod
     async def get_image(image_id: int, db: AsyncSession):
-        # 비동기 쿼리 방식
         result = await db.execute(select(Image).filter(Image.id == image_id))
         db_image = result.scalar_one_or_none()
         
@@ -31,7 +30,6 @@ class ImageService:
 
     @staticmethod
     async def get_image_raw(image_id: int, db: AsyncSession):
-        # 비동기 쿼리 방식
         result = await db.execute(select(Image).filter(Image.id == image_id))
         db_image = result.scalar_one_or_none()
         
