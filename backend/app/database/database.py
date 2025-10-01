@@ -36,17 +36,16 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 def create_tables():
     try:
         # 모든 모델 import (Base에 등록하기 위해)
-        import backend.app.database.models.user  # noqa: F401
-        import backend.app.database.models.roles  # noqa: F401
-        import backend.app.database.models.user_roles  # noqa: F401
-        import backend.app.database.models.surveys  # noqa: F401
-        import backend.app.database.models.survey_question  # noqa: F401
-        import backend.app.database.models.survey_option  # noqa: F401
-        import backend.app.database.models.responses  # noqa: F401
-        import backend.app.database.models.response_detail  # noqa: F401
-        import backend.app.database.models.comment  # noqa: F401
-        import backend.app.database.models.surveystats  # noqa: F401
-        import backend.app.database.models.tags  # noqa: F401
+        import backend.app.database.models.user
+        import backend.app.database.models.roles
+        import backend.app.database.models.user_roles
+        import backend.app.database.models.surveys
+        import backend.app.database.models.survey_question
+        import backend.app.database.models.survey_option
+        import backend.app.database.models.responses
+        import backend.app.database.models.response_detail
+        import backend.app.database.models.surveystats
+        import backend.app.database.models.email_logs
 
         Base.metadata.create_all(bind=sync_engine)
         print("데이터베이스 테이블 생성")
