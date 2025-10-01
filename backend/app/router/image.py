@@ -1,30 +1,35 @@
 from fastapi import APIRouter, UploadFile, File, Depends
-from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
-from fastapi.responses import StreamingResponse
-from backend.app.database.models.image import Image
+from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.database.database import get_db
 from backend.app.database.schemas.image import ImageResponse
-import io
 
 from backend.app.service.image import ImageService
 
-router=APIRouter()
+router = APIRouter(prefix="/image", tags=["Image"])
 
 # 이미지 업로드
 @router.post("/upload", response_model=ImageResponse)
-async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    result = ImageService.image_upload(file, db)
+async def upload_image(
+    file: UploadFile = File(...), 
+    db: AsyncSession = Depends(get_db)
+):
+    result = await ImageService.image_upload(file, db)
     return result
 
 # 이미지 조회
-@router.get("/image/{image_id}")
-def get_image_by_id(image_id: int, db: Session = Depends(get_db)):
-    result = ImageService.get_image(image_id, db)
+@router.get("/{image_id}")
+async def get_image_by_id(
+    image_id: int, 
+    db: AsyncSession = Depends(get_db)
+):
+    result = await ImageService.get_image(image_id, db)
     return result
 
 # 이미지 원본 보여주기
-@router.get("/image/raw/{image_id}")
-def get_image_raw_by_id(image_id: int, db: Session = Depends(get_db)):
-    result = ImageService.get_image_raw(image_id, db)
+@router.get("/raw/{image_id}")
+async def get_image_raw_by_id(
+    image_id: int, 
+    db: AsyncSession = Depends(get_db)
+):
+    result = await ImageService.get_image_raw(image_id, db)
     return result

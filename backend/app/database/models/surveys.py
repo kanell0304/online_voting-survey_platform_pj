@@ -18,4 +18,4 @@ class Surveys(Base):
     user: Mapped["User"] = relationship("User", back_populates="survey")
     questions: Mapped[List["SurveyQuestion"]] = relationship("SurveyQuestion", back_populates="survey", cascade="all, delete-orphan")
     responses: Mapped[List["Response"]] = relationship("Response", cascade="all, delete-orphan")
-    email_log: Mapped[List["EmailLog"]] = relationship("EmailLog", back_populates="surveys", cascade="all, delete-orphan")
+    email_logs: Mapped[List["EmailLog"]] = relationship("EmailLog", back_populates="surveys", cascade="all, delete-orphan")

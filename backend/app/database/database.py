@@ -46,6 +46,7 @@ def create_tables():
         import backend.app.database.models.response_detail
         import backend.app.database.models.surveystats
         import backend.app.database.models.email_logs
+        import backend.app.database.models.image  # image 모델 추가
 
         Base.metadata.create_all(bind=sync_engine)
         print("데이터베이스 테이블 생성")

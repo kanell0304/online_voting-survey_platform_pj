@@ -1,25 +1,28 @@
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import UploadFile, File
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from fastapi.responses import StreamingResponse
 from backend.app.database.models.image import Image
-from backend.app.database.database import get_db
 import io
 
 class ImageService:
 
     @staticmethod
-    async def image_upload(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    async def image_upload(file: UploadFile, db: AsyncSession):
         contents = await file.read()  # 업로드된 파일을 읽어옴
         db_image = Image(filename=file.filename, data=contents)
         db.add(db_image)  # db를 db세션에 추가
-        db.commit()
-        db.refresh(db_image)
+        await db.commit()  # 비동기 commit
+        await db.refresh(db_image)  # 비동기 refresh
         return db_image
 
     @staticmethod
-    def get_image(image_id: int, db: Session = Depends(get_db)):
-        db_image = db.query(Image).filter(Image.id == image_id).first()
+    async def get_image(image_id: int, db: AsyncSession):
+        # 비동기 쿼리 방식
+        result = await db.execute(select(Image).filter(Image.id == image_id))
+        db_image = result.scalar_one_or_none()
+        
         if not db_image:
             return JSONResponse(status_code=404, content={"message": "Image not found"})
         return JSONResponse(
@@ -27,8 +30,11 @@ class ImageService:
         )
 
     @staticmethod
-    def get_image_raw(image_id: int, db: Session = Depends(get_db)):
-        db_image = db.query(Image).filter(Image.id == image_id).first()
+    async def get_image_raw(image_id: int, db: AsyncSession):
+        # 비동기 쿼리 방식
+        result = await db.execute(select(Image).filter(Image.id == image_id))
+        db_image = result.scalar_one_or_none()
+        
         if not db_image:
             return JSONResponse(status_code=404, content={"message": "Image not found"})
 
