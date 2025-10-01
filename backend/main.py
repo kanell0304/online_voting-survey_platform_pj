@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.service.api_routes import router as service_router
+from app.router.image import router as image_router
 from app.database.database import create_tables
 from app.database.base import Base
 
@@ -22,4 +23,11 @@ app.include_router(
     service_router,
     prefix="/api",
     tags=["Service API"]
+)
+
+# 이미지 라우터 추가
+app.include_router(
+    image_router,
+    prefix="/api/images",
+    tags=["Image API"]
 )
