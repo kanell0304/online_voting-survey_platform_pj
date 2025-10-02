@@ -19,7 +19,7 @@ class EmailService:
         self.gmail_password = os.getenv("GMAIL_APP_PASSWORD")
         self.frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-    # 이메일 작성하기 (title, content를 삽입하고 간단한 css를 적용)
+    # 이메일 폼 생성(title, content를 삽입하고 임시 css를 적용) - 향후 삭제 가능
     def _create_html_content(self, content: str, survey_link: str) -> str:
         return f"""
         <!DOCTYPE html>
@@ -27,44 +27,12 @@ class EmailService:
         <head>
             <meta charset="UTF-8">
             <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                }}
-                .container {{
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                    background-color: #f9f9f9;
-                }}
-                .content {{
-                    background-color: white;
-                    padding: 30px;
-                    border-radius: 10px;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-                }}
-                .button {{
-                    display: inline-block;
-                    padding: 12px 30px;
-                    margin: 20px 0;
-                    background-color: #4CAF50;
-                    color: white !important;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    font-weight: bold;
-                }}
-                .button:hover {{
-                    background-color: #45a049;
-                }}
-                .footer {{
-                    margin-top: 20px;
-                    padding-top: 20px;
-                    border-top: 1px solid #ddd;
-                    font-size: 12px;
-                    color: #666;
-                    text-align: center;
-                }}
+                body{{font-family: Arial, sans-serif; line-height: 1.6; color: #333;}}
+                .container{{max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;}}
+                .content{{background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}}
+                .button{{display: inline-block; padding: 12px 30px; margin: 20px 0; background-color: #4CAF50; color: white !important; text-decoration: none; border-radius: 5px; font-weight: bold;}}
+                .button:hover{{background-color: #45a049;}}
+                .footer{{margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; text-align: center;}}
             </style>
         </head>
         <body>
@@ -146,9 +114,8 @@ class EmailService:
                 failed_count += 1
                 failed_emails.append(log.recipient_email)
                 print(message)
-            
-            # Gmail 발송 제한 방지를 위한 짧은 대기
-            await asyncio.sleep(0.1)  # 0.1초 대기
+
+            await asyncio.sleep(0.1)  # gmail 발송 제한 방지를 위한 0.1초 대기
         
         return {
             "total": total, # 총 개수
