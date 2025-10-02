@@ -11,7 +11,7 @@ class EmailLog(Base):
     __tablename__="email_logs"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    received_email: Mapped[EmailStr] = mapped_column(String(50), nullable=False) # 수신자 이메일
+    recipient_email: Mapped[EmailStr] = mapped_column(String(50), nullable=False) # 받는사람 이메일
     title: Mapped[str] = mapped_column(String(100), nullable=False) # 제목
     content: Mapped[str] = mapped_column(String(500), nullable=False) # 내용
     created_at:Mapped[datetime]=mapped_column(TIMESTAMP, server_default=func.now(), nullable=False) # 생성 일

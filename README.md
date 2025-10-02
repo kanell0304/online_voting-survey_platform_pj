@@ -19,8 +19,7 @@ terminal로 backend 폴더로 이동 후 다음을 순서대로 실행
 
 1. echo "" > .env
 
-2. .env에 다음 내용을 작성
-3. 
+2. .env에 다음 내용을 작성(br태그를 제외하고 입력) <br>
 #DB 설정 <br>
 DB_USER=root <br>
 DB_PASSWORD=1234 <br>
