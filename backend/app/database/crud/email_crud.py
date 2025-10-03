@@ -18,7 +18,7 @@ async def create_bulk_email_logs(db: AsyncSession, bulk_data: EmailLogsBulkCreat
     email_logs = [] # db.add() 작업이 완료된 이메일 로그를 저장할 배열
     
     # 각 수신자별로 개별 로그 생성
-    for recipient in bulk_data.recipients:
+    for recipient in bulk_data.recipient_email:
         db_email_log = EmailLog(recipient_email=recipient, title=bulk_data.title, content=bulk_data.content, survey_id=bulk_data.survey_id)
         db.add(db_email_log)
         email_logs.append(db_email_log) # 추가된 이메일 로그는 email_logs 배열에 저장

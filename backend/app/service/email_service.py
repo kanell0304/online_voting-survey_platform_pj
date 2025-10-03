@@ -103,6 +103,7 @@ class EmailService:
         
         # 각 이메일을 순차적으로 발송 (Gmail 제한 고려)
         for log in email_logs:
+            print(f"이메일 발송 시도: {log.recipient_email}")
             success, message = await self.send_single_email(recipient_email=log.recipient_email, title=log.title, content=log.content, survey_link=survey_link)
 
             # 성공/실패 여부 기록
@@ -116,7 +117,9 @@ class EmailService:
                 print(message)
 
             await asyncio.sleep(0.1)  # gmail 발송 제한 방지를 위한 0.1초 대기
-        
+
+        await asyncio.sleep(len(email_logs) * 1)
+
         return {
             "total": total, # 총 개수
             "success_count": success_count, # 발송 성공 개수

@@ -24,7 +24,7 @@ class EmailLogsRead(EmailLogsInDB):
 
 # 다중 이메일 발송 스키마
 class EmailLogsBulkCreate(BaseModel):
-    recipients: List[EmailStr] = Field(..., description="받는 사람 이메일 목록")
+    recipient_email: List[EmailStr] = Field(..., description="받는 사람 이메일 목록")
     title: str = Field(..., min_length=1, max_length=100, description="이메일 제목")
     content: str = Field(..., min_length=1, max_length=500, description="이메일 내용")
     survey_id: int = Field(..., description="설문지 id")
@@ -40,7 +40,7 @@ class EmailSendResponse(BaseModel):
 
 # 테스트 이메일 발송
 class EmailTestRequest(BaseModel):
-    recipient: EmailStr = Field(..., description="받는 사람 이메일")
+    recipient_email: EmailStr = Field(..., description="받는 사람 이메일")
     title: str = Field(..., min_length=1, description="이메일 제목")
     content: str = Field(..., min_length=1, description="이메일 내용")
     survey_id: int = Field(..., description="설문지 ID")
