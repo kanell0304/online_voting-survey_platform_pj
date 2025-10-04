@@ -29,8 +29,8 @@ async def create_bulk_email_logs(db: AsyncSession, bulk_data: EmailLogsBulkCreat
     # 각 로그를 새로고침하여 생성된 id와 created_at 가져오기 -> db에 insert함으로써 id, created_at값 생성
     for log in email_logs:
         await db.refresh(log)
-    
-    return [EmailLogsRead.model_validate(log) for log in email_logs]
+
+    return [EmailLogsRead.model_validate(log) for log in email_logs] # 리스트 컴프리헨션 => 목표 리스트의 값들을 하나씩 꺼내서 .model_validate()를 실행 한 후 결과값들을 새로운 리스트에 담아 return
 
 # 특정 설문지의 이메일 로그 모두 조회
 async def get_email_logs_by_survey_id(db: AsyncSession, survey_id: int) -> List[EmailLogsRead]:

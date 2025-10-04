@@ -1,8 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database.database import create_tables
-from app.service.api_routes import router as service_router
-from app.database.base import Base
+from backend.app.router.api_routes_preset import router as service_router
 from app.router import image
 from app.router import email
 

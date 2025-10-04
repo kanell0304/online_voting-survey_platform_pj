@@ -72,7 +72,7 @@ async def send_survey_emails(survey_id: int, background_tasks: BackgroundTasks, 
         raise HTTPException(status_code=400, detail=f"Gmail은 하루 500통까지만 발송 가능합니다. (현재: {len(email_logs)}통)")
 
     result = {
-            "total": 0, # 총 개수
+            "total": len(email_logs), # 총 개수
             "success_count": 0, # 발송 성공 개수
             "failed_count": 0, # 발송 실패 개수
             "survey_link": "", # 설문지 링크
@@ -100,7 +100,7 @@ async def send_survey_emails(survey_id: int, background_tasks: BackgroundTasks, 
 
     # return EmailSendResponse(
     #     total=len(email_logs),
-    #     success_count=0,  # 백그라운드 작업이므로 0
+    #     success_count=0,
     #     failed_count=0,
     #     survey_link=survey_link,
     #     success_emails=[],
