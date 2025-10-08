@@ -1,29 +1,45 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import FormRenderer from '../Forms/FormRenderer';
 
 export default function ResponsePage() {
   const location = useLocation();
-  const form = location.state || { title: "", questions: [] };
+  const [searchParams] = useSearchParams();
+  const [form, setForm] = useState(location.state || { title: "", questions: [] });
 
-  const [answers, setAnswers] = useState({});
+  useEffect(() => {
+    const formId = searchParams.get("formId");
+    if (!location.state && formId) {
+      (async () => {
+        try {
+          const res = await fetch(`http://localhost:8000/forms/${formId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setForm(data);
+          }
+        } catch (err) {
+          console.error("정보 가져오는데 오류", err);
+        }
+      })();
+    }
+  }, [location.state, searchParams]);
 
-  const handleChange = (idx, value) => {
-    setAnswers({ ...answers, [idx]: value });
-  };
-
-  const submitResponse = async () => {
+  const submitResponse = async (answers) => {
     try {
-      const res = await fetch(`http://localhost:8000/responses`, {
+      const payload = { form, answers };
+      const res = await fetch("http://localhost:8000/responses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
-        alert("Response submitted!");
+        alert("성공");
+      } else {
+        alert("실패");
       }
     } catch (err) {
       console.error(err);
+      alert("제출 오류");
     }
   };
 
