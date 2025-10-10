@@ -9,13 +9,13 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-neutral-50">
         <Routes>
+          
           <Route path="/create" element={<CreateFormPage formData={formData} setFormData={setFormData} />} />
           <Route path="/preview" element={<FormPreview formData={formData} />} />
           <Route path="/responses" element={<ResponsePage />} />
+
         </Routes>
-      </div>
     </Router>
   );
 }
