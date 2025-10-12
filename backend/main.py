@@ -4,6 +4,7 @@ from app.database.database import create_tables
 from backend.app.router.api_routes_preset import router as service_router
 from app.router import image
 from app.router import email
+from app.router import response
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,3 +29,4 @@ app.include_router(
 # 라우터 추가
 app.include_router(image.router)
 app.include_router(email.router)
+app.include_router(response.router)
