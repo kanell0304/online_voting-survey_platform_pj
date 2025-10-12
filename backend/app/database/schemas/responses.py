@@ -9,14 +9,14 @@ class ResponsesBase(BaseModel):
 
 class ResponsesCreate(ResponsesBase):
     survey_id: int
-    user_id: str
+    user_id: int
     details: List[ResponsesDetailCreate]
 
 class ResponsesInDB(ResponsesBase):
     id: int
     submitted_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     survey_id: int
-    user_id: str
+    user_id: int
     details: List[ResponsesDetailRead]
 
     model_config = ConfigDict(from_attributes=True)
