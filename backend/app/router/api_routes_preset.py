@@ -1,26 +1,28 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.app.database.database import get_db
 
 # API 기본 형식입니다 복사해서 쓰셔도 되요
 
 router = APIRouter(prefix="/preset", tags=["Preset"])
 
 @router.post("/create", response_model=None)
-async def create_api(object_create: None, db: AsyncSession):
+async def create_api(object_create: None, db: AsyncSession=Depends(get_db)):
     return None
 
 @router.get("/get_all", response_model=None)
-async def get_all_api(db: AsyncSession):
+async def get_all_api(db: AsyncSession=Depends(get_db)):
     return None
 
 @router.get("/get_one", response_model=None)
-async def get_one_api(object_id: int, db: AsyncSession):
+async def get_one_api(object_id: int, db: AsyncSession=Depends(get_db)):
     return None
 
 @router.put("/edit/{object_id}", response_model=None)
-async def put_api(object_id: int, db: AsyncSession):
+async def put_api(object_id: int, db: AsyncSession=Depends(get_db)):
     return None
 
 @router.delete("/delete/{object_id}", response_model=None)
-async def delete_api(object_id: int, db: AsyncSession):
+async def delete_api(object_id: int, db: AsyncSession=Depends(get_db)):
     return None

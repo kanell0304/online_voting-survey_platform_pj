@@ -5,7 +5,7 @@ class ResponsesDetailBase(BaseModel):
     text_response: str | None
 
 class ResponsesDetailCreate(ResponsesDetailBase):
-    response_id: int
+    response_id: int | None = None
     question_id: int
 
 class ResponsesDetailInDB(ResponsesDetailBase):
