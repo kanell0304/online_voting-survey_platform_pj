@@ -35,21 +35,18 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 def create_tables():
     try:
-        # 모든 모델 import (Base에 등록하기 위해)
-        import backend.app.database.models.user  # noqa: F401
-        import backend.app.database.models.roles  # noqa: F401
-        import backend.app.database.models.user_roles  # noqa: F401
-        import backend.app.database.models.surveys  # noqa: F401
-        import backend.app.database.models.survey_question  # noqa: F401
-        import backend.app.database.models.survey_option  # noqa: F401
-        import backend.app.database.models.responses  # noqa: F401
-        import backend.app.database.models.response_detail  # noqa: F401
-        import backend.app.database.models.comment  # noqa: F401
-        import backend.app.database.models.surveystats  # noqa: F401
-        import backend.app.database.models.tags  # noqa: F401
+        # ✅ 인증만: 유저/롤/유저-롤만 임포트
+        from backend.app.database.models.user import User  # noqa: F401
+        from backend.app.database.models.roles import Role  # noqa: F401
+        from backend.app.database.models.user_roles import UserRole  # noqa: F401
 
-        Base.metadata.create_all(bind=sync_engine)
-        print("데이터베이스 테이블 생성")
-        
+        # ✅ 생성할 테이블만 명시적으로 지정
+        tables_to_create = [User.__table__, Role.__table__, UserRole.__table__]
+
+        # 디버그: 실제 생성 시도할 테이블 목록 출력
+        print("create_tables(tables):", [t.name for t in tables_to_create])
+
+        Base.metadata.create_all(bind=sync_engine, tables=tables_to_create)
+        print("데이터베이스 테이블 생성 (auth-only) 성공")
     except Exception as e:
         print(f"테이블 생성 실패: {e}")

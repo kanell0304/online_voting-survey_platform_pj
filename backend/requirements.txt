@@ -15,3 +15,23 @@ python-dotenv
 requests
 SQLAlchemy==2.0.43
 typer
+cryptography>=41
+
+
+
+
+
+
+fastapi==0.115.0
+uvicorn[standard]==0.37.0
+
+SQLAlchemy==2.0.43
+asyncmy==0.2.10          # 비동기 MySQL 드라이버 (mysql+asyncmy://)
+PyMySQL==1.1.2           # 동기 엔진용(테이블 생성 등) (mysql+pymysql://)
+
+pydantic==2.12.0
+pydantic-settings==2.11.0
+python-dotenv==1.1.1
+
+passlib[bcrypt]==1.7.4   # 비밀번호 해시/검증
+PyJWT==2.10.1            # JWT 발급/검증
