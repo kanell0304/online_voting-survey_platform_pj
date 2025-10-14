@@ -1,10 +1,13 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database.database import create_tables
+from backend.app.middleware.token_refresh import TokenRefreshMiddleware
 from backend.app.router.api_routes_preset import router as service_router
 from app.router import image
 from app.router import email
 from app.router import response
+from app.router import user
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,6 +22,8 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.add_middleware(TokenRefreshMiddleware)
+
 # 서비스 라우터를 /api 프리픽스로 포함
 app.include_router(
     service_router,
@@ -30,3 +35,8 @@ app.include_router(
 app.include_router(image.router)
 app.include_router(email.router)
 app.include_router(response.router)
+app.include_router(user.router)
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
