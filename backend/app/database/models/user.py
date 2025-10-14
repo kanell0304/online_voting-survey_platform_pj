@@ -15,5 +15,5 @@ class User(Base):
     created_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), nullable=True)
 
     #1:M관계
-    survey:Mapped[List["Surveys"]]=relationship("Surveys", back_populates="user", cascade="all, delete-orphan")
-    responses:Mapped[List["Response"]]=relationship("Response", cascade="all, delete-orphan")
+    #survey:Mapped[List["Surveys"]]=relationship("Surveys", back_populates="user", cascade="all, delete-orphan")
+    #responses:Mapped[List["Response"]]=relationship("Response", cascade="all, delete-orphan")
