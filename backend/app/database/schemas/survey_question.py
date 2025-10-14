@@ -1,0 +1,29 @@
+from pydantic import BaseModel, Field, ConfigDict
+from datetime import datetime
+from sqlalchemy import Text
+from typing import Optional, List
+from backend.app.database.models.survey_question import QuestionType
+from backend.app.database.schemas.survey_option import SurveyOptionCreate, SurveyOptionOut
+
+class SurveyQuestionBase(BaseModel):
+    question_text:str=Field(..., max_length=500)
+    question_type:QuestionType
+
+class SurveyQuestionCreate(SurveyQuestionBase):
+    options:Optional[list[SurveyOptionCreate]]=[]
+
+class SurveyQuestionOut(SurveyQuestionBase):
+    question_id:int
+    options:List[SurveyOptionOut]=[]
+    created_at:Optional[datetime]
+    updated_at:Optional[datetime]
+
+    model_config = ConfigDict(from_attributes=True)
+
+# 질문 수정
+# class SurveyQuestionUpdate(BaseModel):
+#     question_text:Optional[str]=Field(None, max_length=500)
+#     question_type:Optional[QuestionType]=None
+
+
+

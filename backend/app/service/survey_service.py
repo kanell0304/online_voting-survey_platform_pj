@@ -1,24 +1,23 @@
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.app.database.schemas.survey import SurveyCreate
-from backend.app.database.crud.survey_crud import SurveyCrud
+from backend.app.database.schemas.surveys import SurveyCreate
+from backend.app.database.crud.surveys_crud import SurveyCrud
 
 class SurveyService:
-    def __init__(self, db:AsyncSession):
-        self.db=db
 
-    async def create_new_survey(self, user_id:int, survey:SurveyCreate):
-        return await SurveyCrud.create_new_survey(self.db, user_id, survey)
+    @staticmethod
+    async def create_survey(db:AsyncSession, user_id:int, survey:SurveyCreate):
+        return await SurveyCrud.create_new_survey(db, user_id, survey)
     
-    async def list_my_surveys(self, user_id:int):
-        return await SurveyCrud.list_my_surveys(self.db, user_id)
+    @staticmethod
+    async def get_detailed(db:AsyncSession, survey_id:int, user_id:int):
+        return await SurveyCrud.get_my_detailed_survey(db, survey_id, user_id)
     
-    async def get_my_detailed_survey(self, survey_id:int, user_id:int):
-        my_survey=await SurveyCrud.get_my_detailed_survey(self.db, survey_id, user_id)
-
-        if not my_survey:
-            raise HTTPException(status_code=404, detail="Survey Not Found")
-        return my_survey
+    @staticmethod
+    async def list_surveys(db:AsyncSession, user_id:int):
+        return await SurveyCrud.list_my_surveys(db, user_id)
     
-    # 설문 삭제 서비스
+    @staticmethod
+    async def delete_survey(db:AsyncSession, user_id:int, survey_id:int):
+        return await SurveyCrud.delete_my_survey(db, user_id, survey_id)
 

@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Optional, List
 from datetime import datetime
+from backend.app.database.schemas.survey_question import SurveyQuestionCreate, SurveyQuestionOut
 
 class SurveyBase(BaseModel):
     title:str=Field(..., max_length=40)
@@ -8,16 +9,16 @@ class SurveyBase(BaseModel):
     expire_at:Optional[datetime]=None
 
 class SurveyCreate(SurveyBase):
-    pass
+    questions:List[SurveyQuestionCreate]=[]
 
 class SurveyOut(SurveyBase):
     survey_id:int
     user_id:int
     created_at:datetime
     expire_at:Optional[datetime]=None
-
-    class Config:
-        from_attributes=True
+    questions:List[SurveyQuestionOut]=[]
+    
+    model_config = ConfigDict(from_attributes=True)
 
 # 설문 수정용 : 제목, 설명, 마감기한 수정
 # class SurveyUpdate(BaseModel):
