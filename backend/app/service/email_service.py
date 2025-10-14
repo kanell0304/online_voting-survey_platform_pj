@@ -17,9 +17,9 @@ class EmailService:
         self.smtp_port = 465
         self.gmail_user = os.getenv("GMAIL_USER")
         self.gmail_password = os.getenv("GMAIL_APP_PASSWORD")
-        self.frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+        self.frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
-    # 이메일 폼 생성(title, content를 삽입하고 임시 css를 적용) - 향후 삭제 가능
+    # 이메일 폼 생성(title, content, survey_link를 삽입하고 임시 css를 적용) - 향후 삭제 가능
     def _create_html_content(self, content: str, survey_link: str) -> str:
         return f"""
         <!DOCTYPE html>
