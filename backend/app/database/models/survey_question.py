@@ -10,12 +10,12 @@ import enum
 # 설문지 타입 정의
 # Enum -> 고정 값
 class QuestionType(str, enum.Enum):
-    single_choice = "single_choice"
-    multiple_choice = "multiple_choice"
+    # single_choice = "single_choice"
+    # multiple_choice = "multiple_choice"
     short_text     = "short_text"
     long_text      = "long_text"
-    rating         = "rating"
-    yes_no         = "yes_no"
+    # rating         = "rating"
+    # yes_no         = "yes_no"
 
 # 설문지 질문 테이블 ex) 1. 이 설문을 하기까지의 경로가 어떻게 됩니까?
 class SurveyQuestion(Base):

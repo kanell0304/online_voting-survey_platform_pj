@@ -12,7 +12,7 @@ router = APIRouter(prefix="/emails", tags=["Email Logs"])
 # 테스트 이메일 발송
 @router.post("/test", response_model=dict)
 async def send_test_email(test_request: EmailTestRequest):
-    survey_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:3000')}/survey/{test_request.survey_id}" # 설문지 링크
+    survey_link = f"{os.getenv('FRONTEND_URL', 'http://localhost:5173')}/survey/{test_request.survey_id}" # 설문지 링크
     
     is_success, message = await email_service.send_single_email(recipient_email=test_request.recipient_email, title=test_request.title, content=test_request.content, survey_link=survey_link)
     
@@ -86,7 +86,7 @@ async def send_survey_emails(survey_id: int, background_tasks: BackgroundTasks, 
     
     background_tasks.add_task(send_emails_task)
     
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
     survey_link = f"{frontend_url}/survey/{survey_id}"
 
     return {
@@ -119,7 +119,7 @@ async def create_and_send_emails(bulk_data: EmailLogsBulkCreate, background_task
     
     background_tasks.add_task(send_emails_task)
     
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
     survey_link = f"{frontend_url}/survey/{bulk_data.survey_id}"
     
     return {
