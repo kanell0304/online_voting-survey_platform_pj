@@ -5,14 +5,11 @@ from backend.app.core.settings import settings
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 
-#bcrypt ???댁떆 ?뚭퀬由ъ쬁 以??덉젙?깆씠 ?믪??? ?⑥뒪?뚮뱶 ??μ뿉 留롮씠 ?대떎
 pwd_context=CryptContext(schemes=["bcrypt"])
 
-#?댁떆媛????
 async def get_pwd_hash(password:str):
     return pwd_context.hash(password)
 
-#鍮꾨쾲 寃利??낅젰??鍮꾨쾲怨? db????λ맂 ?댁떆媛?鍮꾨쾲 媛숈쑝硫?true)
 async def verify_pwd(plain_password:str, hashed_password:str):
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -44,7 +41,7 @@ def decode_token(token: str) -> dict:
     )
 
 
-def verify_token(token: str) -> int:
+def verify_token(token: str) -> dict:
     payload = decode_token(token)
-    return payload.get("uid")
+    return payload
 

@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field, ConfigDict
 class UserBase(BaseModel):
     email: str
     username: str
+    phone_number: str
 
 
 # 회원가입 요청

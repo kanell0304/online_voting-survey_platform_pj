@@ -59,7 +59,7 @@ class TokenRefreshMiddleware(BaseHTTPMiddleware):
             return response
 
         # payload에서 사용자 식별 추출
-        user_id = payload.get("sub") or payload.get("user_id")
+        user_id = payload.get("uid")
         if user_id is None:
             return response
 

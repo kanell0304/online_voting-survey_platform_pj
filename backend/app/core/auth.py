@@ -81,11 +81,14 @@ def get_user_id(request: Request) -> int:
         raise HTTPException(status_code=401, detail="인증 정보가 없습니다.")
 
     try:
-        verify_result = verify_token(access)
+        payload  = verify_token(access)
     except Exception:
         raise HTTPException(status_code=401, detail="토큰이 유효하지 않습니다.")
 
-    user_id = _extract_user_id_from_verify_result(verify_result)
+    user_id = payload.get("uid")
     if user_id is None:
         raise HTTPException(status_code=401, detail="토큰에 사용자 정보가 없습니다.")
-    return user_id
+    try:
+        return int(user_id)
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=401, detail="토큰의 사용자 정보가 유효하지 않습니다.")
