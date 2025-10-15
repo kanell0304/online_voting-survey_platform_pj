@@ -7,6 +7,7 @@ from app.router import image
 from app.router import email
 from app.router import response
 from app.router import user
+from app.router import survey, survey_question, survey_option
 
 
 @asynccontextmanager
@@ -36,6 +37,9 @@ app.include_router(image.router)
 app.include_router(email.router)
 app.include_router(response.router)
 app.include_router(user.router)
+app.include_router(survey.router)
+app.include_router(survey_question.router)
+app.include_router(survey_option.router)
 
 @app.get("/health")
 def health():
