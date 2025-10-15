@@ -36,7 +36,7 @@ class UserService:
 
         # 비밀번호 해시
         hashed_pw = await get_pwd_hash(user.password)
-        user_create = UserCreate(username=user.username, password=hashed_pw, email=user.email)
+        user_create = UserCreate(username=user.username, password=hashed_pw, phone_number=user.phone_number, email=user.email)
 
         try:
             db_user = await UserCrud.create(db, user_create)
