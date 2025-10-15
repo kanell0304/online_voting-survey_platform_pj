@@ -13,6 +13,8 @@ class SurveyStats(Base):
     question_id:Mapped[Optional[int]]=mapped_column(ForeignKey("survey_questions.question_id"), index=True, nullable=True)
     period_start:Mapped[Optional[datetime]]=mapped_column(DateTime, index=True, nullable=True) # 통계 집계 시작 시간
     period_end:Mapped[Optional[datetime]]=mapped_column(DateTime, index=True, nullable=True) # 통계 집계 종료 시간
+    distributed_count: Mapped[int] = mapped_column(default=0)  # 배포 수
+    response_count: Mapped[int] = mapped_column(default=0)  # 응답 수
 
     stat_kind:Mapped[str]=mapped_column(String(30), index=True, nullable=False) # 통계의 종류/유형
     stat_data:Mapped[dict]=mapped_column(JSON, nullable=False) # 실제 통계 데이터
