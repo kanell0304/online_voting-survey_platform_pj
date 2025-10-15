@@ -5,8 +5,8 @@ load_dotenv()
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy import create_engine
-from ..core.settings import settings
-from ..database.base import Base
+from backend.app.core.settings import settings
+from backend.app.database.base import Base
 
 # 엔진 설정
 async_engine = create_async_engine(
