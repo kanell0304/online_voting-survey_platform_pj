@@ -10,11 +10,11 @@ class SurveyQuestionBase(BaseModel):
     question_type:QuestionType
 
 class SurveyQuestionCreate(SurveyQuestionBase):
-    options:Optional[list[SurveyOptionCreate]]=[]
+    options:Optional[list[SurveyOptionCreate]]=Field(default_factory=list)
 
 class SurveyQuestionOut(SurveyQuestionBase):
     question_id:int
-    options:List[SurveyOptionOut]=[]
+    options:List[SurveyOptionOut]=Field(default_factory=list)
     created_at:Optional[datetime]
     updated_at:Optional[datetime]
 

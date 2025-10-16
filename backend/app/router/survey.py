@@ -10,9 +10,8 @@ router=APIRouter(prefix="/surveys", tags=["Surveys"])
 
 
 @router.post("", response_model=SurveyOut, status_code=status.HTTP_201_CREATED)
-async def create_surveys(survey:SurveyCreate, user:int, db:AsyncSession=Depends(get_db)):
-    new_survey=await SurveyService.create_survey(db, user, survey)
-    await db.commit()
+async def create_surveys(survey:SurveyCreate, user_id:int, db:AsyncSession=Depends(get_db)):
+    new_survey=await SurveyService.create_survey(db, user_id, survey)
     return new_survey
 
 @router.get("", response_model=List[SurveyOut])
@@ -21,7 +20,7 @@ async def get_all_surveys(user_id:int, db:AsyncSession=Depends(get_db)):
 
 @router.get("/{survey_id}", response_model=SurveyOut)
 async def get_my_survey(survey_id:int, user_id:int, db:AsyncSession=Depends(get_db)):
-    my_survey=await SurveyService.get_detailed(db, user_id, survey_id)
+    my_survey=await SurveyService.get_detailed(db, survey_id, user_id)
     if not my_survey:
         raise HTTPException(status_code=404, detail="Survey Not Found")
     return my_survey

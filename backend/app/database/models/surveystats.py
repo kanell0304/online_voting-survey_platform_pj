@@ -1,4 +1,4 @@
-from backend.app.database.base import Base
+from ..base import Base
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import BigInteger, TIMESTAMP, func, DateTime, String, JSON, ForeignKey

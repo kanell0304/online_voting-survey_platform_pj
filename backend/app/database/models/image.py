@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, LargeBinary
 from sqlalchemy.dialects.mysql import LONGBLOB
-from backend.app.database.base import Base
+from ..base import Base
 
 
 class Image(Base):

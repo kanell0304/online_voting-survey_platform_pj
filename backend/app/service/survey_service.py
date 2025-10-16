@@ -19,5 +19,5 @@ class SurveyService:
     
     @staticmethod
     async def delete_survey(db:AsyncSession, user_id:int, survey_id:int):
-        return await SurveyCrud.delete_my_survey(db, user_id, survey_id)
+        return await SurveyCrud.delete_my_survey(db, survey_id, user_id)
 

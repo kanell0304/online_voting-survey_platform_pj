@@ -40,8 +40,12 @@ class SurveyCrud:
                 db.add(option)
                 await db.flush()
 
-        await db.refresh(new_survey)
-        return new_survey
+        await db.commit()
+
+        stmt=(select(Surveys).where(Surveys.survey_id==new_survey.survey_id).options(
+            selectinload(Surveys.questions).selectinload(SurveyQuestion.options)))
+        result=await db.execute(stmt)
+        return result.scalar_one()
     
     # 설문 상세보기
     @staticmethod

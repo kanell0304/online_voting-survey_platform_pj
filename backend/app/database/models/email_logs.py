@@ -1,6 +1,6 @@
 from pydantic import EmailStr
 
-from backend.app.database.base import Base
+from ..base import Base
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import BigInteger, Text, TIMESTAMP, func, DateTime, String, JSON, ForeignKey
