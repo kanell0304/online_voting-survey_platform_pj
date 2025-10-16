@@ -9,14 +9,14 @@ class SurveyBase(BaseModel):
     expire_at:Optional[datetime]=None
 
 class SurveyCreate(SurveyBase):
-    questions:List[SurveyQuestionCreate]=[]
+    questions:List[SurveyQuestionCreate]=Field(default_factory=list)
 
 class SurveyOut(SurveyBase):
     survey_id:int
     user_id:int
     created_at:datetime
     expire_at:Optional[datetime]=None
-    questions:List[SurveyQuestionOut]=[]
+    questions:List[SurveyQuestionOut]=Field(default_factory=list)
     
     model_config = ConfigDict(from_attributes=True)
 
