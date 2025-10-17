@@ -10,7 +10,7 @@ export default function FormRenderer({ form, onSubmit }) {
 
   // 필수 체크한 질문 안할 경우 alert
   const handleSubmit = async () => {
-    for(i=0; i < form.questions.length; i++){
+    for(let i=0; i < form.questions.length; i++){
       const q = form.questions[i];
       if(q.required){
         const a = answers[i];

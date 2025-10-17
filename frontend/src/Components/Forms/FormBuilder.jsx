@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function FormBuilder({ formData, setFormData }) {
+export default function FormBuilder({ formData, setFormData, onSave }) {
   const navigate = useNavigate();
   
   // 질문 추가
@@ -33,13 +33,11 @@ export default function FormBuilder({ formData, setFormData }) {
     setFormData({...formData, questions: nq});
   };
 
-  // 폼 저장 한번 더 확인 //(테스트용 - 수정 예정)
-  const handleSave = ()=> {
-    if(confirm("이대로 폼을 제출하시겠습니까?")){
-      alert("폼이 저장되었습니다(확인용 임시)");
-      navigate("/my-surveys")
-    }
+  // 폼 저장 / 우선 이대로 시도
+  const handleSave = () => {
+    if (onSave) onSave(formData);
   };
+
 
   return (
     <div className="flex justify-center py-10 bg-gray-50 min-h-screen">
