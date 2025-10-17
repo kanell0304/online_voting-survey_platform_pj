@@ -37,6 +37,7 @@ export default function FormBuilder({ formData, setFormData }) {
   const handleSave = ()=> {
     if(confirm("이대로 폼을 제출하시겠습니까?")){
       alert("폼이 저장되었습니다(확인용 임시)");
+      navigate("/my-surveys")
     }
   };
 
