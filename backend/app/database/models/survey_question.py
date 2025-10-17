@@ -10,8 +10,8 @@ import enum
 # 설문지 타입 정의
 # Enum -> 고정 값
 class QuestionType(str, enum.Enum):
-    # single_choice = "single_choice"
-    # multiple_choice = "multiple_choice"
+    single_choice = "single_choice"
+    multiple_choice = "multiple_choice"
     short_text     = "short_text"
     long_text      = "long_text"
     # rating         = "rating"
