@@ -5,8 +5,8 @@ load_dotenv()
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy import create_engine
-from ..core.settings import settings
-from .base import Base
+from backend.app.core.settings import settings
+from backend.app.database.base import Base
 
 # 엔진 설정
 async_engine = create_async_engine(
@@ -35,18 +35,18 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 def create_tables():
     try:
-        # 모든 모델 import (Base에 등록)
-        from .models import user
-        from .models import roles
-        from .models import user_roles
-        from .models import surveys
-        from .models import survey_question
-        from .models import survey_option
-        from .models import responses
-        from .models import response_detail
-        from .models import surveystats
-        from .models import email_logs
-        from .models import image
+        # 모든 모델 import (Base에 등록하기 위해)
+        import backend.app.database.models.user
+        import backend.app.database.models.roles
+        import backend.app.database.models.user_roles
+        import backend.app.database.models.surveys
+        import backend.app.database.models.survey_question
+        import backend.app.database.models.survey_option
+        import backend.app.database.models.responses
+        import backend.app.database.models.response_detail
+        import backend.app.database.models.surveystats
+        import backend.app.database.models.email_logs
+        import backend.app.database.models.image  # image 모델 추가
 
         Base.metadata.create_all(bind=sync_engine)
         print("데이터베이스 테이블 생성")

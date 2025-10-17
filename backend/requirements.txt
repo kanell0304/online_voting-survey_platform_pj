@@ -15,7 +15,4 @@ python-dotenv
 requests
 SQLAlchemy==2.0.43
 typer
-
-
-#차영준 추가
 Werkzeug==3.0.3
