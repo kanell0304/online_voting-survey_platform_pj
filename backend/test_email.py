@@ -39,10 +39,10 @@
 #     response = requests.post(f"{BASE_URL}/test", json=data)
 #
 #     if response.status_code == 200:
-#         print("✅ 테스트 이메일 발송 성공!")
+#         print("테스트 이메일 발송 성공!")
 #         print(json.dumps(response.json(), indent=2, ensure_ascii=False))
 #     else:
-#         print("❌ 테스트 이메일 발송 실패!")
+#         print("테스트 이메일 발송 실패!")
 #         print(response.text)
 #     print()
 #
@@ -63,10 +63,10 @@
 #     response = requests.post(f"{BASE_URL}/create-and-send", json=data)
 #
 #     if response.status_code == 200:
-#         print("✅ 이메일 발송 시작!")
+#         print("이메일 발송 시작!")
 #         print(json.dumps(response.json(), indent=2, ensure_ascii=False))
 #     else:
-#         print("❌ 발송 실패!")
+#         print("발송 실패!")
 #         print(response.text)
 #     print()
 #
@@ -81,7 +81,7 @@
 #
 #     if response.status_code == 200:
 #         result = response.json()
-#         print("✅ 발송 완료!")
+#         print("발송 완료!")
 #         print(f"총: {result['total']}명")
 #         print(f"성공: {result['success_count']}명")
 #         print(f"실패: {result['failed_count']}명")
@@ -92,7 +92,7 @@
 #             for failed in result['failed_emails']:
 #                 print(f"  - {failed['email']}: {failed['error']}")
 #     else:
-#         print("❌ 발송 실패!")
+#         print("발송 실패!")
 #         print(response.text)
 #     print()
 #
@@ -124,13 +124,13 @@
 #
 #             test_bulk_create_and_send(survey_id, recipients)
 #
-#     print("\n✅ 테스트 완료!\n")
+#     print("\n테스트 완료!\n")
 #
 #
 # if __name__ == "__main__":
 #     try:
 #         main()
 #     except KeyboardInterrupt:
-#         print("\n\n❌ 테스트가 중단되었습니다.")
+#         print("\n\n테스트가 중단되었습니다.")
 #     except Exception as e:
-#         print(f"\n\n❌ 오류 발생: {str(e)}")
+#         print(f"\n\n오류 발생: {str(e)}")

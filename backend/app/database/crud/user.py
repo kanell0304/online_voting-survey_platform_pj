@@ -3,8 +3,8 @@ from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from app.database.models.user import User  # 모델 경로 통일
-from app.database.schemas.user import UserCreate
+from ..models.user import User  # 모델 경로 통일
+from ..schemas.user import UserCreate
 
 class UserCrud:
 

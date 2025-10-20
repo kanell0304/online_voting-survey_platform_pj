@@ -3,9 +3,9 @@ from typing import Tuple, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
-from app.database.schemas.user import UserCreate, UserLogin, UserUpdate, UserRead
-from app.database.crud.user import UserCrud
-from app.core.jwt_context import (
+from ..database.schemas.user import UserCreate, UserLogin, UserUpdate, UserRead
+from ..database.crud.user import UserCrud
+from ..core.jwt_context import (
     get_pwd_hash,
     verify_pwd,
     create_access_token,
@@ -36,7 +36,7 @@ class UserService:
         if await UserCrud.get_username(db, user.username):
             raise HTTPException(status_code=400, detail="이미 존재하는 사용자명입니다.")
         hashed_pw = await get_pwd_hash(user.password)
-        user_create = UserCreate(username=user.username, password=hashed_pw, email=user.email)
+        user_create = UserCreate(username=user.username, phone_number=user.phone_number, password=hashed_pw, email=user.email)
         try:
             db_user = await UserCrud.create(db, user_create)
             await db.commit()

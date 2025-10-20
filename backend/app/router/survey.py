@@ -17,7 +17,7 @@ async def create_surveys(survey:SurveyCreate, user_id: int = Depends(get_user_id
     return new_survey
 
 @router.get("", response_model=List[SurveyOut])
-async def get_all_surveys(user_id:int, db:AsyncSession=Depends(get_db)):
+async def get_all_surveys(user_id:int = Depends(get_user_id), db:AsyncSession=Depends(get_db)):
     return await SurveyService.list_survey(db, user_id)
 
 @router.get("/{survey_id}", response_model=SurveyOut)

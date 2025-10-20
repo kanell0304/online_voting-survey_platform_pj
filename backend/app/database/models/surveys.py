@@ -16,20 +16,6 @@ class Surveys(Base):
     expire_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, default=(lambda: datetime.utcnow() + timedelta(days=14)), nullable=True) # 마감일 default: 생성일 + 14일
 
     user: Mapped["User"] = relationship("User", back_populates="surveys")
-
-    questions: Mapped[List["SurveyQuestion"]] = relationship(
-        "SurveyQuestion", 
-        back_populates="survey", 
-        cascade="all, delete-orphan", 
-        lazy="selectin")
-    
-    responses: Mapped[List["Response"]] = relationship(
-        "Response", 
-        cascade="all, delete-orphan", 
-        lazy="selectin")
-    
-    email_logs: Mapped[List["EmailLog"]] = relationship(
-        "EmailLog", 
-        back_populates="surveys", 
-        cascade="all, delete-orphan", 
-        lazy="selectin")
+    questions: Mapped[List["SurveyQuestion"]] = relationship("SurveyQuestion", back_populates="survey", cascade="all, delete-orphan", lazy="selectin")
+    responses: Mapped[List["Response"]] = relationship("Response", cascade="all, delete-orphan", lazy="selectin")
+    email_logs: Mapped[List["EmailLog"]] = relationship("EmailLog", back_populates="surveys", cascade="all, delete-orphan", lazy="selectin")

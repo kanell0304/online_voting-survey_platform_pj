@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Optional
 
 # 유저 역할 ex) admin, manager, guest
-class Role(Base):
+class Roles(Base):
     __tablename__ = "roles"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
