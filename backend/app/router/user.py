@@ -3,16 +3,11 @@ from typing import List
 from fastapi import APIRouter, Depends, Response, Request, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.crud.user import UserCrud
-from app.database.schemas.user import (
-    UserCreate,
-    UserUpdate,
-    UserLogin,
-    UserRead,
-)
-from app.service.user import UserService
-from app.database.database import get_db
-from app.core.auth import set_auth_cookies, get_user_id
+from ..database.crud.user import UserCrud
+from ..database.schemas.user import (UserCreate, UserUpdate, UserLogin, UserRead, UserReadWithRoles)
+from ..service.user import UserService
+from ..database.database import get_db
+from ..core.auth import set_auth_cookies, get_user_id
 
 router = APIRouter(prefix="/users", tags=["User"])
 
@@ -22,7 +17,7 @@ router = APIRouter(prefix="/users", tags=["User"])
 
 @router.post("/register", response_model=UserRead, summary="회원가입")
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    db_user = await UserService.register(db, user)
+    db_user = await UserService.register(db, user, role_name=user.role)
     return db_user
 
 @router.post("/login", response_model=UserRead, summary="로그인")
@@ -41,9 +36,9 @@ async def logout(response: Response, request: Request, db: AsyncSession = Depend
     response.delete_cookie(key="refresh_token", path="/")
     return True
 
-@router.get("/userme", response_model=UserRead, summary="내 정보 조회")
+@router.get("/userme", response_model=UserReadWithRoles, summary="내 정보 조회")
 async def get_me(user_id: int = Depends(get_user_id), db: AsyncSession = Depends(get_db)):
-    return await UserService.get_user(db, user_id)
+    return await UserService.get_user_with_user_roles(db, user_id)
 
 # --------------------------
 # 사용자 목록 / 단건 조회 / 수정 / 삭제

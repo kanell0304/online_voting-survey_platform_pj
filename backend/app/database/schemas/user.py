@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -17,7 +17,7 @@ class UserBase(BaseModel):
 # 회원가입 요청
 class UserCreate(UserBase):
     password: str
-
+    role: Optional[str] = "USER"  # 기본값 USER => 'ADMIN' 으로 생성하려면 ADMIN 값 입력 필요
 
 # 로그인 요청
 class UserLogin(BaseModel):
@@ -41,6 +41,12 @@ class UserInDB(UserBase):
     # password: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+class RoleRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    role_name: str
+    description: Optional[str] = None
 
 # 클라이언트 응답용(비밀번호 제외)
 class UserRead(UserBase):
@@ -48,3 +54,6 @@ class UserRead(UserBase):
 
     user_id: int
     created_at: datetime
+
+class UserReadWithRoles(UserRead):
+    roles: List[RoleRead] = []

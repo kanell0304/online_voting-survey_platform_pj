@@ -13,6 +13,13 @@ class UserCrud:
         result = await db.execute(select(User).where(User.user_id == user_id))
         return result.scalar_one_or_none()
 
+    # 회원 roles와 함께 회원 조회
+    @staticmethod
+    async def get_user_with_role(db: AsyncSession, user_id: int)-> Optional[User]:
+        from sqlalchemy.orm import selectinload
+        result = await db.execute(select(User).options(selectinload(User.roles)).where(User.user_id == user_id))
+        return result.scalar_one_or_none()
+
     @staticmethod
     async def create(db: AsyncSession, user: UserCreate) -> User:
         db_user = User(**user.model_dump())

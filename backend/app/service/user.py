@@ -1,16 +1,15 @@
 # backend/app/service/user.py
+from pydoc import describe
 from typing import Tuple, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
-
+from sqlalchemy import select
+from ..database.models import Roles, UserRoles
+from ..database.models.roles import RoleEnum
 from ..database.schemas.user import UserCreate, UserLogin, UserUpdate, UserRead
 from ..database.crud.user import UserCrud
-from ..core.jwt_context import (
-    get_pwd_hash,
-    verify_pwd,
-    create_access_token,
-    create_refresh_token,
-)
+from ..database.models import User
+from ..core.jwt_context import (get_pwd_hash, verify_pwd, create_access_token, create_refresh_token)
 
 class UserService:
     """User 도메인 서비스 (CRUD + 인증 토큰 발급)"""
@@ -18,6 +17,13 @@ class UserService:
     @staticmethod
     async def get_user(db: AsyncSession, user_id: int):
         db_user = await UserCrud.get_id(db, user_id)
+        if not db_user:
+            raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+        return db_user
+
+    @staticmethod
+    async def get_user_with_user_roles(db: AsyncSession, user_id: int):
+        db_user = await UserCrud.get_user_with_role(db, user_id)
         if not db_user:
             raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
         return db_user
@@ -32,18 +38,42 @@ class UserService:
         return users
 
     @staticmethod
-    async def register(db: AsyncSession, user: UserCreate):
+    async def register(db: AsyncSession, user: UserCreate, role_name: str = RoleEnum.USER):
         if await UserCrud.get_username(db, user.username):
             raise HTTPException(status_code=400, detail="이미 존재하는 사용자명입니다.")
+
         hashed_pw = await get_pwd_hash(user.password)
-        user_create = UserCreate(username=user.username, phone_number=user.phone_number, password=hashed_pw, email=user.email)
+        # user_create = UserCreate(username=user.username, phone_number=user.phone_number, password=hashed_pw, email=user.email, role=user.role)
+
         try:
-            db_user = await UserCrud.create(db, user_create)
+
+            db_user = User(username=user.username, phone_number=user.phone_number, password=hashed_pw, email=user.email)
+            db.add(db_user)
+            await db.flush()
+
+            # user_role 로직 추가 - 이경준
+            result = await db.execute(select(Roles).where(Roles.role_name == role_name))
+            role = result.scalar_one_or_none()
+
+            if not role:
+                role_description = "일반 사용자"
+                if role_name == "ADMIN":
+                    role_description = "Admin 관리자"
+                role = Roles(role_name=role_name, description=role_description)
+                db.add(role)
+                await db.flush()
+
+            user_role = UserRoles(user_id = db_user.user_id, role_id=role.id)
+            db.add(user_role)
+
             await db.commit()
             await db.refresh(db_user)
             return db_user
-        except Exception:
+        except Exception as e:
             await db.rollback()
+            print(f"회원가입 에러: {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
             raise HTTPException(status_code=500, detail="회원가입 처리 중 오류가 발생했습니다.")
 
     @staticmethod

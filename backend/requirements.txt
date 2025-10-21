@@ -1,6 +1,6 @@
 alembic==1.16.5
 asyncmy==0.2.10
-bcrypt==4.3.0
+bcrypt==3.2.2  # 4.3.0 → 3.2.2로 변경
 click
 colorama
 itsdangerous==2.2.0

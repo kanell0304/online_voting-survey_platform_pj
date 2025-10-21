@@ -19,3 +19,6 @@ class User(Base):
     #1:M관계
     surveys:Mapped[List["Surveys"]]=relationship("Surveys", back_populates="user", cascade="all, delete-orphan")
     responses:Mapped[List["Response"]]=relationship("Response", cascade="all, delete-orphan")
+
+    # M:M 관계 - 이경준
+    roles: Mapped[List["Roles"]] = relationship("Roles", secondary="user_roles", back_populates="users")
