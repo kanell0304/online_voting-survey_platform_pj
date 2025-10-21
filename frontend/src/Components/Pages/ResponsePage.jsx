@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import FormRenderer from '../Forms/FormRenderer';
 
 export default function ResponsePage() {
   const location = useLocation();
-  const [searchParams] = useSearchParams();
+  const { formId } = useParams();
   const [form, setForm] = useState(location.state || { title: "", questions: [] });
 
   useEffect(() => {
-    const formId = searchParams.get("formId");
     if (!location.state && formId) {
       (async () => {
         try {
@@ -20,7 +19,7 @@ export default function ResponsePage() {
         }
       })();
     }
-  }, [location.state, searchParams]);
+  }, [location.state, formId]);
 
   const submitResponse = async (answers) => {
     try {
