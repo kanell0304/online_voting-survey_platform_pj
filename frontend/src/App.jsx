@@ -38,7 +38,7 @@ export default function App() {
             <FormPreview formData={formData} />
           </MainLayout>
         } />
-        <Route path="/responses" element={<MainLayout><ResponsePage /></MainLayout>} />
+        <Route path="/surveys/:formId" element={<MainLayout><ResponsePage /></MainLayout>} />
 
         <Route path="/survey-result" element={<MainLayout><SurveyResultPage /></MainLayout>} />
         <Route path="/distribute" element={<MainLayout><SurveyDistributionPage /></MainLayout>} />

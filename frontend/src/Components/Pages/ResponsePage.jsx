@@ -12,7 +12,8 @@ export default function ResponsePage() {
     if (!location.state && formId) {
       (async () => {
         try {
-          const res = await axios.get(`http://localhost:8081/forms/${formId}`);
+          const res = await axios.get(`http://localhost:8081/surveys/${formId}`);
+          console.log(`res: ${res}`);
           setForm(res.data);
         } catch (err) {
           console.error("정보 가져오는데 오류", err);

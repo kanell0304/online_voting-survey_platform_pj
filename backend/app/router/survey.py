@@ -21,8 +21,8 @@ async def get_all_surveys(user_id:int = Depends(get_user_id), db:AsyncSession=De
     return await SurveyService.list_survey(db, user_id)
 
 @router.get("/{survey_id}", response_model=SurveyOut)
-async def get_my_survey(survey_id:int, user_id: int = Depends(get_user_id), db:AsyncSession=Depends(get_db)):
-    my_survey=await SurveyService.get_detailed(db, survey_id, user_id)
+async def get_my_survey(survey_id:int, db:AsyncSession=Depends(get_db)):
+    my_survey=await SurveyService.get_detailed(db, survey_id)
     if not my_survey:
         raise HTTPException(status_code=404, detail="Survey Not Found")
     return my_survey
