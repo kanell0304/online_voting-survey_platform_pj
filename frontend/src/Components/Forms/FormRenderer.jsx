@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 
 export default function FormRenderer({ form, onSubmit }) {
 
@@ -26,8 +26,8 @@ export default function FormRenderer({ form, onSubmit }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f5dc] flex justify-center py-12">
-      <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-8 border border-gray-200">
+    <div className="min-h-screen flex justify-center py-12">
+      <div className="w-full max-w-2xl bg-[#f5f5dc] shadow-lg rounded-2xl p-8 border border-gray-200">
 
         {/* 제목 */}
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">{form.title || "제목 없음"}</h2>
