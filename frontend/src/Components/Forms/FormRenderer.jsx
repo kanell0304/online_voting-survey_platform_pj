@@ -37,21 +37,21 @@ export default function FormRenderer({ form, onSubmit }) {
           {form.questions.map((q, i)=>(
             <div key={i} className="p-5 bg-gray-50 rounded-xl border border-gray-300 hover:border-blue-400 transition">
               <div className="mb-3 font-semibold text-gray-800">
-                {i + 1}. {q.text}{q.required && <span className="text-red-500 ml-1">(필수)</span>}
+                {i + 1}. {q.question_text}{q.required && <span className="text-red-500 ml-1">(필수)</span>}
               </div>
 
               {/* 단답형 */}
-              {q.type === "text" && (
+              {q.question_type === "short_text" && (
                 <input value={answers[i] || ""} placeholder="답변을 입력하세요" onChange={(e)=>setAnswer(i, e.target.value)} className="w-full px-3 py-2 border-b-2 border-gray-400 bg-transparent outline-none focus:border-blue-500 transition" />
               )}
 
               {/* 객관식 */}
-              {q.type === "choice" && (
+              {q.question_type === "single_choice" && (
                 <div className="mt-2 space-y-2">
                   {(q.options || []).map((opt, oi) => (
                     <label key={oi} className="flex items-center gap-2 cursor-pointer">
-                      <input type="radio" name={`q-${i}`} value={opt} checked={answers[i] === opt} onChange={(e)=>setAnswer(i, e.target.value)} className="accent-blue-600" />
-                      <span className="text-gray-700">{opt}</span>
+                      <input type="radio" name={`q-${i}`} value={opt.option_text} checked={answers[i] === opt.option_text} onChange={(e)=>setAnswer(i, e.target.value)} className="accent-blue-600" />
+                      <span className="text-gray-700">{opt.option_text}</span>
                     </label>
                   ))}
                 </div>

@@ -50,9 +50,9 @@ class SurveyCrud:
     
     # 설문 상세보기
     @staticmethod
-    async def get_my_detailed_survey(db:AsyncSession, survey_id:int, user_id:int) -> Optional[Surveys]:
+    async def get_my_detailed_survey(db:AsyncSession, survey_id: int) -> Optional[Surveys]:
         stmt=(select(Surveys).where(
-            Surveys.survey_id==survey_id,Surveys.user_id==user_id).options(
+            Surveys.survey_id==survey_id).options(
                 selectinload(Surveys.questions).selectinload(SurveyQuestion.options)))
         
         result=await db.execute(stmt)

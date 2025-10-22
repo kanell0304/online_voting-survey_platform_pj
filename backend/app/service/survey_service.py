@@ -9,8 +9,8 @@ class SurveyService:
         return await SurveyCrud.create_new_survey(db, user_id, survey)
     
     @staticmethod
-    async def get_detailed(db:AsyncSession, survey_id:int, user_id:int):
-        return await SurveyCrud.get_my_detailed_survey(db, survey_id, user_id)
+    async def get_detailed(db:AsyncSession, survey_id:int):
+        return await SurveyCrud.get_my_detailed_survey(db, survey_id)
     
     @staticmethod
     async def list_survey(db:AsyncSession, user_id:int):

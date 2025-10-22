@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database.database import create_tables
 from backend.app.middleware.token_refresh import TokenRefreshMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from backend.app.router.api_routes_preset import router as service_router
 from app.router import image
 from app.router import email
@@ -23,7 +24,12 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-app.add_middleware(TokenRefreshMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:5173", "http://localhost:8081"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"])
 
 # 서비스 라우터를 /api 프리픽스로 포함
 app.include_router(

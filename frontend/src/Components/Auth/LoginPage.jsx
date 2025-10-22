@@ -1,18 +1,33 @@
+// src/Components/Auth/LoginPage.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+.
+import { login } from '../../api/authApi.js'; /
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  // 2. 'async' 함수로 변경
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // TODO: 실제 로그인 API 연동 로직 구현
-    console.log({ email, password });
-    alert('로그인 시도!');
-    // 로그인 성공 시, 내 설문 목록 페이지로 이동
-    // navigate('/my-surveys'); 
+
+    try {
+     
+      const response = await login({ email, password });
+      
+   
+      console.log('로그인 성공:', response.data);
+      alert('로그인에 성공했습니다!');
+      
+      // 5. 다음 페이지로 이동
+      navigate('/my-surveys');
+
+    } catch (error) {
+    
+      console.error('로그인 실패:', error);
+      alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+    }
   };
 
   return (
