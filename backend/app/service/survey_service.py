@@ -1,6 +1,5 @@
-from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.app.database.schemas.surveys import SurveyCreate
+from backend.app.database.schemas.surveys import SurveyCreate, SurveyUpdate
 from backend.app.database.crud.surveys_crud import SurveyCrud
 
 class SurveyService:
@@ -18,6 +17,10 @@ class SurveyService:
         return await SurveyCrud.list_my_surveys(db, user_id)
     
     @staticmethod
-    async def delete_survey(db:AsyncSession, user_id:int, survey_id:int):
+    async def delete_survey(db:AsyncSession, survey_id:int, user_id:int):
         return await SurveyCrud.delete_my_survey(db, survey_id, user_id)
+    
+    @staticmethod
+    async def modify_survey(db:AsyncSession, survey_id:int, user_id:int, survey:SurveyUpdate):
+        return await SurveyCrud.modify_my_survey(db, survey_id, user_id, survey)
 
