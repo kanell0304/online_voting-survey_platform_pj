@@ -1,8 +1,7 @@
 // src/Components/Auth/LoginPage.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-.
-import { login } from '../../api/authApi.js'; /
+import { login } from '../../api/authApi.js';
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
