@@ -3,6 +3,8 @@ from fastapi import FastAPI
 from app.database.database import create_tables
 from backend.app.middleware.token_refresh import TokenRefreshMiddleware
 from fastapi.middleware.cors import CORSMiddleware
+
+from backend.app.router import survey_stats
 from backend.app.router.api_routes_preset import router as service_router
 from app.router import image
 from app.router import email
@@ -46,6 +48,7 @@ app.include_router(user.router)
 app.include_router(survey.router)
 app.include_router(survey_question.router)
 app.include_router(survey_option.router)
+app.include_router(survey_stats.router)
 
 @app.get("/health")
 def health():

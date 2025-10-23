@@ -15,6 +15,7 @@ response_router = _safe_import_router("backend.app.router.response")
 survey_router = _safe_import_router("backend.app.router.survey")
 survey_question_router = _safe_import_router("backend.app.router.survey_question")
 survey_option_router = _safe_import_router("backend.app.router.survey_option")
+survey_stats_router = _safe_import_router("backend.app.router.survey_stats")
 
 # === 유저 라우터(네가 담당한 최신 구현) ===
 # routers/user.py 에 있던 걸 router/user.py 로 옮겼다고 가정
