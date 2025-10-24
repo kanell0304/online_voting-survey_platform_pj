@@ -20,6 +20,10 @@ async def create_surveys(survey:SurveyCreate, user_id: int = Depends(get_user_id
 async def get_all_surveys(user_id:int = Depends(get_user_id), db:AsyncSession=Depends(get_db)):
     return await SurveyService.list_survey(db, user_id)
 
+@router.get("/get_all_public_surveys", response_model=List[SurveyOut])
+async def get_all_surveys_by_is_public_is_true(db: AsyncSession=Depends(get_db)):
+    return await SurveyService.get_all_surveys(db)
+
 @router.get("/{survey_id}", response_model=SurveyOut)
 async def get_my_survey(survey_id:int, db:AsyncSession=Depends(get_db)):
     my_survey=await SurveyService.get_detailed(db, survey_id)

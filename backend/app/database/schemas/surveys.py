@@ -19,7 +19,7 @@ class SurveyOut(SurveyBase):
     description:str
     created_at:datetime
     expire_at:Optional[datetime]=None
-    is_public:bool=False
+    is_public:bool
     questions:List[SurveyQuestionOut]=Field(default_factory=list)
     
     model_config = ConfigDict(from_attributes=True)

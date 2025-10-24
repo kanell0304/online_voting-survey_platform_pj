@@ -1,12 +1,9 @@
-# app/service/survey_stats_service.py
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from ..database.models.surveys import Surveys
 from ..database.models.survey_question import SurveyQuestion, QuestionType
 from ..database.models.responses import Response
-from ..database.models.response_detail import ResponseDetail
 from collections import defaultdict
 from typing import Dict, List, Any
 
@@ -29,7 +26,7 @@ class SurveyStatsService:
         survey = result.scalar_one_or_none()
 
         if not survey: # 설문지가 없다면
-            raise ValueError(f"설문지를 찾을 수 없습니다: survey_id={survey_id}")
+            raise ValueError(f"Survey Not Found: survey_id={survey_id}")
 
         # 전체 통계 계산
         distributed_count = len(survey.email_logs)  # 배포 수
@@ -59,7 +56,7 @@ class SurveyStatsService:
         single_choice_questions = []
         short_text_questions = []
 
-        for question in survey.questions:
+        for question in survey.questions: # questions를 순회하면서
             if question.question_type == QuestionType.single_choice: # 객관식(선택지) 통계
                 stats = SurveyStatsService._calculate_single_choice_stats(question, survey.responses, response_count)
                 single_choice_questions.append(stats)
@@ -78,7 +75,7 @@ class SurveyStatsService:
     # 객관식 응답 결과 계산
     @staticmethod
     def _calculate_single_choice_stats(question: SurveyQuestion, responses: List[Response], total_responses: int) -> Dict[str, Any]: # 따로 스키마를 생성하지 않았기 때문에 Dict형태로 반환
-        # 각 선택지별 선택 횟수 계산
+        # 각 선택지별 선택 횟수 계산 - 어떤 선택지를 몇명이 선택 했는지
         option_counts = defaultdict(int)
         question_respondents = set()  # 이 질문에 응답한 사람들
 
@@ -88,6 +85,7 @@ class SurveyStatsService:
                     option_counts[detail.selected_option_id] += 1
                     question_respondents.add(response.id)
 
+        # 총 응답 개수
         question_response_count = len(question_respondents)
 
         # 이 질문에 대한 응답 율 계산 => ((해당 질문 응답 개수/총 질문 개수) * 100) - 필수가 아닌 질문이 있기 때문에 응답율을 계산
@@ -100,6 +98,7 @@ class SurveyStatsService:
             # 이 질문에 응답한 데이터 중에서 특정 선택지의 비율 계산
             percentage = (count / question_response_count * 100) if question_response_count > 0 else 0
 
+            # 계산된 데이터를 결과물 배열에 담기
             options_data.append({
                 "option_id": option.option_id,
                 "option_text": option.option_text,
@@ -130,7 +129,6 @@ class SurveyStatsService:
 
         question_response_count = len(text_responses)
 
-        # 응답률
         response_rate = (question_response_count / total_responses * 100) if total_responses > 0 else 0
 
         return {
@@ -139,5 +137,5 @@ class SurveyStatsService:
             "question_type": "short_text",
             "total_responses": question_response_count,
             "response_rate": round(response_rate, 2),
-            "sample_responses": text_responses[:5]  # 샘플 5개만
+            "sample_responses": text_responses[:5]  # 샘플 개수 제한: 5개 - 통합 데이터의 경우 데이터 량이 많아 응답 텍스트를 최대 5개 까지만 출력
         }
