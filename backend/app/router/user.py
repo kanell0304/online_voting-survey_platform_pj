@@ -8,6 +8,7 @@ from ..database.schemas.user import (UserCreate, UserUpdate, UserLogin, UserRead
 from ..service.user import UserService
 from ..database.database import get_db
 from ..core.auth import set_auth_cookies, get_user_id
+from ..database.schemas.user import ForgotPasswordRequest, ResetPasswordWithCode
 
 router = APIRouter(prefix="/users", tags=["User"])
 
@@ -77,3 +78,13 @@ async def delete_user(
     if current_user_id != user_id:
         raise HTTPException(status_code=403, detail="본인만 계정을 삭제할 수 있습니다.")
     return await UserService.delete_user(db, user_id)
+
+# 비밀번호 찾기 (인증코드 발송)
+@router.post("/forgot-password", summary="비밀번호 찾기 (인증코드 발송)")
+async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Depends(get_db)):
+    return await UserService.forgot_password(db, request.email, request.username, request.phone_number)
+
+# 인증코드로 비밀번호 재설정
+@router.post("/reset-password", summary="비밀번호 재설정 (인증코드)")
+async def reset_password_with_code(request: ResetPasswordWithCode, db: AsyncSession = Depends(get_db)):
+    return await UserService.reset_password_with_code(db, request.email, request.reset_code, request.new_password)
