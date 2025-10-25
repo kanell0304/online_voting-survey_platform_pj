@@ -79,6 +79,7 @@ async def delete_user(
         raise HTTPException(status_code=403, detail="본인만 계정을 삭제할 수 있습니다.")
     return await UserService.delete_user(db, user_id)
 
+# 비밀번호 찾기 기능 추가 - 이경준
 # 비밀번호 찾기 (인증코드 발송)
 @router.post("/forgot-password", summary="비밀번호 찾기 (인증코드 발송)")
 async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Depends(get_db)):
