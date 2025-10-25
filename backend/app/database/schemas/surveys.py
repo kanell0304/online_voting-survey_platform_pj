@@ -19,6 +19,7 @@ class SurveyOut(SurveyBase):
     description:str
     created_at:datetime
     expire_at:Optional[datetime]=None
+    updated_at:datetime=None
     is_public:bool=False
     questions:List[SurveyQuestionOut]=Field(default_factory=list)
     
@@ -32,6 +33,6 @@ class SurveyUpdate(BaseModel):
 
     @model_validator(mode="after")
     def include_at_least_one_field(self):
-        if all(getattr(self, f) is None for f in ("title", "description", "expired_at")):
+        if all(getattr(self, f) is None for f in ("title", "description", "expire_at")):
             raise ValueError("입력된 변경사항이 없습니다.")
         return self

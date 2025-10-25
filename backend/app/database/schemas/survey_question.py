@@ -8,6 +8,7 @@ from backend.app.database.schemas.survey_option import SurveyOptionCreate, Surve
 class SurveyQuestionBase(BaseModel):
     question_text:str=Field(..., max_length=500)
     question_type:QuestionType
+    is_required:bool=Field(default=False)
 
 class SurveyQuestionCreate(SurveyQuestionBase):
     options:Optional[list[SurveyOptionCreate]]=Field(default_factory=list)

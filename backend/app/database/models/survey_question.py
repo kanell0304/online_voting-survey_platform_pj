@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ..base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Text, Enum, TIMESTAMP, func, ForeignKey
+from sqlalchemy import Text, Enum, TIMESTAMP, func, ForeignKey, Boolean
 from datetime import datetime
 from typing import List, Optional
 import enum
@@ -27,6 +27,8 @@ class SurveyQuestion(Base):
     question_type: Mapped[QuestionType] = mapped_column(Enum(QuestionType), nullable=False)
     created_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), nullable=True)
     updated_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=True)
+    is_required: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
 
     # 질문 1 : N 옵션
     options: Mapped[List["SurveyOption"]] = relationship(
