@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'
 
 export default function Header() {
   const navigate = useNavigate();
@@ -7,13 +8,47 @@ export default function Header() {
   // 🚨 중요: 이 부분은 나중에 실제 로그인 상태 관리 로직으로 대체해야 합니다.
   // (예: Context API, Redux, Zustand 등)
   // 지금은 UI 확인을 위해 false로 설정되어 있습니다. true로 바꾸면 로그인된 화면을 볼 수 있습니다.
-  const isLoggedIn = false; 
-  const userNickname = "김기현"; // 예시 닉네임
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
 
-  const handleLogout = () => {
-    // TODO: 실제 로그아웃 처리 로직 (서버에 요청, 토큰 삭제 등)
-    alert('로그아웃 되었습니다.');
-    navigate('/'); // 로그아웃 후 메인 페이지로 이동
+
+  useEffect(()=>{
+    const token = document.cookie.split("; ").find(x => x.startsWith("access_token") == 0);
+    console.log(token)
+    if(token){
+      (async () => {
+        try{
+          setIsLoggedIn(true);
+          const res = await axios.get(`http://localhost:8081/users/userme`, {withCredentials: true});
+          setUsername(res.data.username)
+        } catch(err){
+          console.error("정보 가져오기 실패:", err)
+        }
+      })();
+    }
+    else{
+        setIsLoggedIn(false);
+        setUsername("");
+    }
+  }, [])
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('http://localhost:8081/users/logout', {}, {
+        withCredentials: true
+      });
+      
+      setIsLoggedIn(false);
+      setUsername("");
+      alert('로그아웃 되었습니다.');
+      navigate('/');
+    } catch (err) {
+      console.error("로그아웃 실패:", err);
+      setIsLoggedIn(false);
+      setUsername("");
+      alert('로그아웃 처리 중 오류가 발생했습니다.');
+      navigate('/');
+    }
   };
 
   return (
@@ -38,7 +73,7 @@ export default function Header() {
                 >
                   내 설문
                 </Link>
-                <span className="text-gray-700 font-semibold text-sm">{userNickname}님</span>
+                <span className="text-gray-700 font-semibold text-sm">{username}님</span>
                 <button 
                   onClick={handleLogout}
                   className="text-sm font-medium text-gray-500 hover:text-gray-700"

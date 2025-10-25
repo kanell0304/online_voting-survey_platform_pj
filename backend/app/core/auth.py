@@ -14,7 +14,7 @@ REFRESH_COOKIE_NAME = "refresh_token"
 
 # 공통 쿠키 옵션 (HTTPS 환경이면 secure=True, samesite='none' 고려)
 COOKIE_COMMON = {
-    "httponly": True,
+    "httponly": False,
     "samesite": "lax",
     "secure": False,
     "path": "/",

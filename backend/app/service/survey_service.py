@@ -11,6 +11,10 @@ class SurveyService:
     @staticmethod
     async def get_detailed(db:AsyncSession, survey_id:int):
         return await SurveyCrud.get_my_detailed_survey(db, survey_id)
+
+    @staticmethod
+    async def get_all_surveys(db: AsyncSession):
+        return await SurveyCrud.list_all_surveys_is_public_is_true(db)
     
     @staticmethod
     async def list_survey(db:AsyncSession, user_id:int):

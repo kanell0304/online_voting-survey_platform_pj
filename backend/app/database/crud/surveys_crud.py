@@ -19,6 +19,7 @@ class SurveyCrud:
             title=surveyCreate.title,
             description=surveyCreate.description,
             expire_at=surveyCreate.expire_at,
+            is_public=surveyCreate.is_public
         )
 
         db.add(new_survey)
@@ -58,10 +59,17 @@ class SurveyCrud:
         result=await db.execute(stmt)
         return result.scalar_one_or_none()
 
-    # 설문 목록 조회
+    # 내 설문 목록 조회
     @staticmethod
     async def list_my_surveys(db:AsyncSession, user_id:int) -> List[Surveys]:
         stmt=select(Surveys).where(Surveys.user_id==user_id).order_by(Surveys.survey_id.desc())
+        result=await db.execute(stmt)
+        return list(result.scalars())
+
+    # 모든 공개 가능한 설문 목록 조회
+    @staticmethod
+    async def list_all_surveys_is_public_is_true(db:AsyncSession) -> List[Surveys]:
+        stmt=select(Surveys).where(Surveys.is_public==True).order_by(Surveys.created_at.desc()) # 공개 여부가 True 모든 Survey들을 가장 최신 순으로 조회
         result=await db.execute(stmt)
         return list(result.scalars())
     

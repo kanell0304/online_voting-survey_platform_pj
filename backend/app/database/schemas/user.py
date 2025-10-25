@@ -57,3 +57,14 @@ class UserRead(UserBase):
 
 class UserReadWithRoles(UserRead):
     roles: List[RoleRead] = []
+
+
+# 비밀번호 찾기 요청 - 이메일, 이름, 전화번호 입력
+class ForgotPasswordRequest(UserBase):
+    pass
+
+# 인증코드로 비밀번호 재설정 -
+class ResetPasswordWithCode(BaseModel):
+    email: str
+    reset_code: str = Field(..., min_length=6, max_length=6)
+    new_password: str

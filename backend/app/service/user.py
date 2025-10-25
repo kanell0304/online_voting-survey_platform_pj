@@ -10,6 +10,7 @@ from ..database.schemas.user import UserCreate, UserLogin, UserUpdate, UserRead
 from ..database.crud.user import UserCrud
 from ..database.models import User
 from ..core.jwt_context import (get_pwd_hash, verify_pwd, create_access_token, create_refresh_token)
+from ..service.email_service import email_service
 
 class UserService:
     """User 도메인 서비스 (CRUD + 인증 토큰 발급)"""
@@ -112,3 +113,56 @@ class UserService:
             raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
         await db.commit()
         return True
+
+    # 비밀번호 찾기 (인증코드 발송)
+    @staticmethod
+    async def forgot_password(db: AsyncSession, email: str, username: str, phone_number: str):
+        # 사용자 확인
+        user = await UserCrud.get_user_by_credentials(db, email, username, phone_number)
+        if not user: # 없으면 exception 발생
+            raise HTTPException(status_code=404, detail="User Not Found")
+
+        # 6자리 인증코드 생성
+        reset_code = UserCrud.generate_reset_code()
+
+        # DB에 코드 저장 (유효기간 15분)
+        await UserCrud.save_reset_code(db, user.user_id, reset_code, expires_minutes=15)
+        await db.commit()
+
+        # 이메일 발송
+        success, message = await email_service.send_reset_code_email(recipient_email=user.email, username=user.username, reset_code=reset_code)
+
+        if not success:
+            raise HTTPException(status_code=500, detail=message)
+
+        return {
+            "message": "인증코드가 이메일로 발송되었습니다.",
+            "expires_in_minutes": 15
+        }
+
+    # 인증코드로 비밀번호 재설정
+    @staticmethod
+    async def reset_password_with_code(db: AsyncSession, email: str, reset_code: str, new_password: str):
+        # 인증코드 검증
+        user = await UserCrud.verify_reset_code(db, email, reset_code)
+        if not user:
+            raise HTTPException(status_code=400, detail="인증코드가 유효하지 않거나 만료되었습니다.")
+
+        try:
+            # 2. 비밀번호 해시화 및 업데이트
+            hashed_password = await get_pwd_hash(new_password)
+            await UserCrud.update_by_id(db, user.user_id, {"password": hashed_password})
+
+            # 3. 인증코드 초기화
+            await UserCrud.clear_reset_code(db, user.user_id)
+
+            await db.commit()
+
+            return {"message": "비밀번호가 성공적으로 변경되었습니다."}
+
+        except Exception as e:
+            await db.rollback()
+            raise HTTPException(
+                status_code=500,
+                detail="비밀번호 변경 중 오류가 발생했습니다."
+            )
