@@ -1,29 +1,21 @@
-// src/Components/Auth/LoginPage.jsx
 import React, { useState } from 'react';
+
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../../api/authApi.js';
+import { login } from '../../api/authApi.js'; 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // 2. 'async' 함수로 변경
+  // API 연동된 handleLogin 함수 (async/await)
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-     
       const response = await login({ email, password });
-      
-   
       console.log('로그인 성공:', response.data);
       alert('로그인에 성공했습니다!');
-      
-      // 5. 다음 페이지로 이동
       navigate('/my-surveys');
-
     } catch (error) {
-    
       console.error('로그인 실패:', error);
       alert('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
@@ -64,7 +56,8 @@ export default function LoginPage() {
         <div className="text-sm text-center text-gray-500">
           <Link to="/signup" className="text-blue-500 hover:underline">회원가입</Link>
           {' | '}
-          <Link to="#" className="text-blue-500 hover:underline">비밀번호 찾기</Link>
+        
+          <Link to="/find-password" className="text-blue-500 hover:underline">비밀번호 찾기</Link>
         </div>
       </div>
     </div>

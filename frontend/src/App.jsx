@@ -8,6 +8,9 @@ import MainLayout from './Components/Layout/MainLayout.jsx';
 import MainPage from './Components/Pages/MainPage.jsx';
 import LoginPage from './Components/Auth/LoginPage.jsx';
 import SignupPage from './Components/Auth/SignupPage.jsx';
+
+import FindPasswordRequestPage from './Components/Auth/FindPasswordRequestPage.jsx';
+import FindPasswordResetPage from './Components/Auth/FindPasswordResetPage.jsx';
 import MySurveysPage from './Components/Pages/MySurveysPage.jsx'; // Survey 폴더로 경로 수정
 import CreateFormPage from './Components/Pages/CreateFormPage.jsx';
 import FormPreview from './Components/Forms/FormPreview.jsx';
@@ -25,6 +28,11 @@ export default function App() {
         {/* 헤더가 필요 없는 독립적인 페이지들 */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+
+        {/* ----- 2. (여기 추가!) 비밀번호 찾기 라우트 2개 ----- */}
+        <Route path="/find-password" element={<FindPasswordRequestPage />} />
+        <Route path="/reset-password" element={<FindPasswordResetPage />} />
+        {/* ----------------------------------------------- */}
 
         {/* MainLayout을 사용해 헤더를 공통으로 적용할 페이지들 */}
         <Route path="/" element={<MainLayout><MainPage /></MainLayout>} />
