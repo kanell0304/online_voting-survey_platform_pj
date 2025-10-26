@@ -53,7 +53,12 @@ class TokenRefreshMiddleware(BaseHTTPMiddleware):
         try:
             payload = verify_token(refresh_token)  # 학원 템플릿 기준: payload(dict) 반환
         except ExpiredSignatureError:
-            return JSONResponse(status_code=401, content={"detail": "refresh_token_expired"})
+            response = JSONResponse(status_code=401, content={"detail": "refresh_token_expired"})
+            origin = request.headers.get("origin")
+            if origin:
+                response.headers["Access-Control-Allow-Origin"] = origin
+                response.headers["Access-Control-Allow-Credentials"] = "true"
+            return response
         except InvalidTokenError:
             # 무효 토큰이면 그대로 통과 (다음 요청에서 로그인하도록)
             return response

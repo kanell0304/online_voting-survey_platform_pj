@@ -13,5 +13,5 @@ class Response(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=True) # 설문 응답자 아이디정보, null가능 -> 값이 존재하지 않으면 익명
     submitted_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False) # 응답 제출 시간
 
-    # Relationships
-    details: Mapped[List["ResponseDetail"]] = relationship("ResponseDetail", back_populates="response", cascade="all, delete-orphan")
+    survey: Mapped["Surveys"] = relationship("Surveys", back_populates="responses")
+    details: Mapped[List["ResponseDetail"]] = relationship("ResponseDetail", back_populates="response", cascade="all, delete-orphan", lazy="selectin")

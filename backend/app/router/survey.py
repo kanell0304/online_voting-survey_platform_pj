@@ -32,7 +32,7 @@ async def get_my_survey(survey_id:int, db:AsyncSession=Depends(get_db)):
     return my_survey
 
 @router.delete("/{survey_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_surveys(user_id:int, survey_id:int, db:AsyncSession=Depends(get_db)):
+async def delete_surveys(survey_id:int, user_id:int = Depends(get_user_id), db:AsyncSession=Depends(get_db)):
     deleted=await SurveyService.delete_survey(db, survey_id, user_id)
     if deleted==0:
         raise HTTPException(status_code=404, detail="Survey Not Found")

@@ -6,7 +6,7 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
   
   // 질문 추가
   const addQuestion = () => {
-    const nq = {text:"", type:"단답형", required:false, options:[]};
+    const nq = {text:"", type:"단답형", is_required:false, options:[]};
     setFormData({
       ...formData,
       questions:[...formData.questions, nq]
@@ -91,7 +91,7 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
             {/* 필수선택, 복사, 삭제 버튼 */}
             <div className="flex items-center space-x-4 text-sm pt-2 border-t border-gray-300 mt-3">
               <label className="flex items-center space-x-1">
-                <input type="checkbox" checked={q.required} onChange={(e)=>updateQuestion(i, { required: e.target.checked })} />
+                <input type="checkbox" checked={q.is_required || false} onChange={(e)=>updateQuestion(i, { is_required: e.target.checked ? true : false })} />
                 <span>필수</span>
               </label>
               <button onClick={()=>copyQuestion(i)} className="hover:text-blue-600">복사</button>

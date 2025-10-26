@@ -32,14 +32,14 @@ export default function ResponsePage() {
           return{
             question_id: question.question_id,
             selected_option_id:
-              question.type === "choice"
-                ? question.options.find(opt=>opt === value)?.id || null
+              question.question_type === "single_choice"
+                ? question.options.find(opt=>opt.option_text === value)?.option_id || null
                 : null,
-            text_response: question.type === "text" ? value : null
+            text_response: question.question_type === "short_text" ? (value || null) : null
           };
         })
       };
-      await axios.post("http://localhost:8081/responses/create", payload);
+      await axios.post("http://localhost:8081/responses/create", payload, {withCredentials: true});
       alert("응답이 성공적으로 제출되었습니다.");
     }
     catch(err){

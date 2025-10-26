@@ -87,7 +87,7 @@ async def send_survey_emails(survey_id: int, background_tasks: BackgroundTasks, 
     background_tasks.add_task(send_emails_task)
     
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
-    survey_link = f"{frontend_url}/survey/{survey_id}"
+    survey_link = f"{frontend_url}/surveys/{survey_id}"
 
     return {
         "total": len(email_logs),  # 총 개수
@@ -120,7 +120,7 @@ async def create_and_send_emails(bulk_data: EmailLogsBulkCreate, background_task
     background_tasks.add_task(send_emails_task)
     
     frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
-    survey_link = f"{frontend_url}/survey/{bulk_data.survey_id}"
+    survey_link = f"{frontend_url}/surveys/{bulk_data.survey_id}"
     
     return {
         "message": f"{len(bulk_data.recipient_email)}명에게 이메일 발송이 시작되었습니다.",

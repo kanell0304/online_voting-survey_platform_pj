@@ -23,7 +23,16 @@ class ResponseService:
 
         db.add(db_response)
         await db.commit()
-        await db.refresh(db_response, attribute_names=['details'])
+        await db.refresh(db_response) # survey_id를 로드
+
+        # 방금 가져온 survey_id로 response_detail도 같이 가져옴
+        result = await db.execute(
+            select(Response)
+            .options(selectinload(Response.details))
+            .where(Response.id == db_response.id)
+        )
+        db_response = result.scalar_one()
+
         return db_response
 
     # 특정 response 조회

@@ -14,7 +14,7 @@ import FormPreview from './Components/Forms/FormPreview.jsx';
 import ResponsePage from './Components/Pages/ResponsePage.jsx';
 import SurveyResultPage from './Components/Survey/SurveyResultPage.jsx';
 import SurveyDistributionPage from './Components/Survey/SurveyDistributionPage.jsx';
-import EditFormPage from './Components/Pages/EditFormPage.jsx'
+import EditFormPage from './Components/Pages/EditFormPage.jsx';
 
 export default function App() {
   const [formData, setFormData] = useState({ title: "", questions: [] });
@@ -42,7 +42,7 @@ export default function App() {
         <Route path="/surveys/:formId" element={<MainLayout><ResponsePage /></MainLayout>} />
         <Route path="/edit/:formId" element={<MainLayout><EditFormPage /></MainLayout>} />
 
-        <Route path="/survey-result" element={<MainLayout><SurveyResultPage /></MainLayout>} />
+        <Route path="/survey-result/:formId" element={<MainLayout><SurveyResultPage /></MainLayout>} />
         <Route path="/distribute/:formId" element={<MainLayout><SurveyDistributionPage /></MainLayout>} />
       </Routes>
     </Router>

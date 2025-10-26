@@ -37,7 +37,7 @@ export default function FormRenderer({ form, onSubmit }) {
           {form.questions.map((q, i)=>(
             <div key={i} className="p-5 bg-gray-50 rounded-xl border border-gray-300 hover:border-blue-400 transition">
               <div className="mb-3 font-semibold text-gray-800">
-                {i + 1}. {q.question_text}{q.required && <span className="text-red-500 ml-1">(필수)</span>}
+                {i + 1}. {q.question_text}{q.is_required && <span className="text-red-500 ml-1">(필수)</span>}
               </div>
 
               {/* 단답형 */}

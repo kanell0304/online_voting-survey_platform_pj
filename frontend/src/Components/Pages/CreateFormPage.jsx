@@ -17,6 +17,7 @@ export default function CreateFormPage({ formData, setFormData }) {
       questions: form.questions.map((q)=>({
         question_text: q.text,
         question_type: q.type === "단답형" ? "short_text" : "single_choice",
+        is_required: q.is_required || false,
         options: q.options?.map((opt)=>({option_text: opt})) || [],
       }))
     };

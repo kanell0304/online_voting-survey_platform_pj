@@ -1,38 +1,122 @@
-import React from 'react';
-
-// 실제로는 API를 통해 받아올 데이터의 예시입니다.
-const mockSurveys = [
-  { id: 1, title: '고객 만족도 설문', createdAt: '2025-10-01' },
-  { id: 2, title: '신제품 아이디어 조사', createdAt: '2025-10-05' },
-  { id: 3, title: '팀 워크숍 장소 선호도', createdAt: '2025-10-11' },
-  { id: 4, title: '웹사이트 사용성 평가', createdAt: '2025-10-12' },
-];
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { MdOutlineDeleteForever } from "react-icons/md";
 
 export default function MySurveysPage() {
+
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mySurveys, setMySurveys] = useState([]);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [selectSurveyId, setSelectSurveyId] = useState(null);
+
+useEffect(()=>{
+    const token = document.cookie.split("; ").find(x => x.startsWith("access_token") == 0);
+    console.log(token)
+    if(token){
+      (async () => {
+        try{
+          setIsLoggedIn(true);
+          const res = await axios.get(`http://localhost:8081/users/userme`, {withCredentials: true});
+          const res_mySurveys = await axios.get(`http://localhost:8081/surveys`, {withCredentials: true});
+          setMySurveys(res_mySurveys.data)
+        } catch(err){
+          console.error("정보 가져오기 실패:", err)
+        }
+      })();
+    }
+    else{
+        setIsLoggedIn(false);
+    }
+  }, [])
+
+  const handleCreateClick = () => {
+    navigate("/create");
+  }
+
+  const handleResultClick = (survey_id) => {
+    navigate(`/survey-result/${survey_id}`);
+  }
+
+  const handlePostClick = (survey_id) => {
+    navigate(`/distribute/${survey_id}`);
+  }
+
+  const handleEditClick = (survey_id) => {
+    navigate(`/edit/${survey_id}`);
+  }
+
+  const handleDeleteClick = (survey_id) => {
+    setIsDeleteModal(true);
+    setSelectSurveyId(survey_id);
+  }
+
+  const handleDeleteConfirmClick = async() => {
+    console.log(`selectSurveyId: ${selectSurveyId}`)
+    try{
+      const res = await axios.delete(`http://localhost:8081/surveys/${selectSurveyId}`, {withCredentials: true});
+      setMySurveys(prevSurveys => prevSurveys.filter(survey => survey.survey_id !== selectSurveyId));
+      alert("삭제되었습니다.");
+      setIsDeleteModal(false);
+    } catch(err){
+      console.error("정보 가져오기 실패:", err)
+    }
+  }
+
+  const handleDeleteCancleClick =() => {
+    setIsDeleteModal(false);
+  }
+
   return (
     <div className="min-h-screen bg-neutral-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold">My Surveys</h1>
           <p className="text-gray-600">지금까지 만든 설문 목록입니다.</p>
+          <button onClick={handleCreateClick} className="px-3 py-1 ml-184 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">설문지 작성하기</button>
         </div>
 
         {/* 설문 목록을 그리드 형태로 표시 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockSurveys.map((survey) => (
-            <div key={survey.id} className="p-4 bg-white border rounded-lg shadow">
-              <h3 className="text-lg font-semibold mb-2">{survey.title}</h3>
-              <p className="text-sm text-gray-500 mb-4">생성일: {survey.createdAt}</p>
+          {mySurveys.length === 0 ? (
+            <p className="text-gray-500 col-span-full text-center py-8">아직 작성된 설문지가 없습니다.</p>
+            ):(
+          mySurveys.map(survey => {
+            return (
+            <div key={survey.survey_id} className="p-4 bg-white border rounded-lg shadow">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold mb-2">{survey.title}</h3>
+                <button onClick={() => handleDeleteClick(survey.survey_id)} className="px-3 py-1 rounded-md hover:bg-gray-300"><MdOutlineDeleteForever /></button>
+              </div>
+              <p className="text-sm text-gray-500 mb-4">생성일: {survey.created_at.split('T')[0]}</p>
               <div className="flex justify-end space-x-2">
-                <button className="px-3 py-1 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">
-                  결과보기
+                <button onClick={() => handleResultClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">
+                  결과
                 </button>
-                <button className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">
-                  공유하기
+                <button onClick={() => handlePostClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                  배포
+                </button>
+                <button onClick={() => handleEditClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                  수정
                 </button>
               </div>
             </div>
-          ))}
+          )}))}
+        </div>
+        <div>
+        {isDeleteModal && (
+          <div className="fixed inset-0 bg-black bg-black/20 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+              <h2 className="text-xl font-bold mb-4 text-gray-800">삭제 확인</h2>
+              <p className="text-gray-600 mb-6">해당 설문지을 정말 삭제하시겠습니까?<br />삭제된 설문지 데이터는 복구할 수 없습니다.</p>
+              <div className="flex justify-end space-x-3">
+                <button onClick={() => handleDeleteConfirmClick()} className="px-4 py-2 text-sm text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">삭제</button>
+                <button onClick={() => handleDeleteCancleClick()} className="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">취소</button>
+              </div>
+            </div>
+          </div>
+        )}
         </div>
       </div>
     </div>

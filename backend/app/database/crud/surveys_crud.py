@@ -3,6 +3,9 @@ from sqlalchemy import select, delete
 from sqlalchemy.orm import selectinload
 from typing import Optional, List
 from datetime import datetime, timezone
+
+from typing_inspection.typing_objects import is_required
+
 from backend.app.database.schemas.surveys import SurveyCreate, SurveyUpdate
 from backend.app.database.models.surveys import Surveys
 from backend.app.database.models.survey_question import SurveyQuestion
@@ -29,7 +32,8 @@ class SurveyCrud:
             questions=SurveyQuestion(
                 survey_id=new_survey.survey_id,
                 question_text=q.question_text,
-                question_type=q.question_type
+                question_type=q.question_type,
+                is_required=q.is_required
             )
             db.add(questions)
             await db.flush()

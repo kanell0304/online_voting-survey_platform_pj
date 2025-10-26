@@ -14,18 +14,20 @@ class SurveyStatsService:
     @staticmethod
     async def get_complete_survey_stats(db: AsyncSession, survey_id: int) -> Dict[str, Any]: # 따로 스키마를 생성하지 않았기 때문에 Dict형태로 반환
         # 특정 survey_id 설문지와 모든 관련 데이터를 한 번에 조회
-        query = (select(Surveys)
-                 .options(
-            selectinload(Surveys.questions)
-                    .selectinload(SurveyQuestion.options),selectinload(Surveys.responses)
-                    .selectinload(Response.details),selectinload(Surveys.email_logs)
-                )
-                .where(Surveys.survey_id == survey_id))
+        query = (
+            select(Surveys)
+            .options(
+                selectinload(Surveys.questions).selectinload(SurveyQuestion.options),
+                selectinload(Surveys.responses).selectinload(Response.details),
+                selectinload(Surveys.email_logs)  # 이메일 로그
+            )
+            .where(Surveys.survey_id == survey_id)
+        )
 
         result = await db.execute(query)
         survey = result.scalar_one_or_none()
 
-        if not survey: # 설문지가 없다면
+        if not survey:
             raise ValueError(f"Survey Not Found: survey_id={survey_id}")
 
         # 전체 통계 계산

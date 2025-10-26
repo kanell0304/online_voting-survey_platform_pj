@@ -68,13 +68,13 @@ export default function SignupPage() {
           <div>
             <input type="tel" placeholder="전화번호 (phone_number)" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-          <div>
+          {/* <div>
             <label htmlFor="role-select" className="text-sm text-gray-600">역할 (role)</label>
             <select id="role-select" value={role} onChange={(e) => setRole(e.target.value)} required className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="USER">일반 사용자 (USER)</option>
               <option value="ADMIN">관리자 (ADMIN)</option>
             </select>
-          </div>
+          </div> */}
           
           <button type="submit" className="w-full px-4 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600">
             회원가입

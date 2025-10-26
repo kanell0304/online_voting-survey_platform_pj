@@ -68,8 +68,6 @@ export default function EditFormPage(){
           <div>
             <h3 className="block mb-1 font-semibold">마감일</h3>
             <input type="date" value={formData.expire_at} onChange={(e)=>setFormData({...formData, expire_at: e.target.value})} className="w-full border-b border-gray-400 p-2 outline-none focus:border-blue-500"/>
-            <input type='date' value={formData.expire_at}></input>
-            <p>{formData.expire_at}</p>
           </div>
         </div>
 
