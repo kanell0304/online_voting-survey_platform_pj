@@ -10,12 +10,11 @@ from typing import Optional
 class SurveyOption(Base):
     __tablename__ = "survey_options"
 
-    option_id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    option_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True,index=True)
     question_id: Mapped[int] = mapped_column(ForeignKey("survey_questions.question_id", ondelete="CASCADE"), nullable=False, index=True)
     option_text: Mapped[str] = mapped_column(String(500), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-
+    
     # 옵션 N : 1 질문
     question: Mapped["SurveyQuestion"] = relationship(
         "SurveyQuestion",
