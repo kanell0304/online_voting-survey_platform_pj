@@ -31,7 +31,7 @@ export default function CreateFormPage({ formData, setFormData }) {
 
       alert("성공적으로 저장되었습니다!");
       if(window.confirm("공유 하시겠습니까?")){
-        navigate("/distribute"); //배포페이지
+        navigate(`/distribute/${res.data.survey_id}`); //배포페이지
         return;
       }
       navigate("/my-surveys"); // 배포로 안갈때

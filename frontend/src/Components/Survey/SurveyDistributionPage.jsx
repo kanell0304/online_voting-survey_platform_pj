@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'; 
+import { useParams } from 'react-router-dom';
 
 // ====================================================
-// 1. EmailDistributionArea 컴포넌트
+// 1. EmailDistributionArea 컴포넌트: 이메일 발송 관련 UI
 // ====================================================
 const EmailDistributionArea = ({ emails, newEmail, onNewEmailChange, onAddEmail, onDeleteEmail, emailSubject, onSubjectChange, emailBody, onBodyChange }) => (
     <div className="flex flex-col gap-6">
@@ -23,6 +25,7 @@ const EmailDistributionArea = ({ emails, newEmail, onNewEmailChange, onAddEmail,
                     추가
                 </button>
             </div>
+            {/* 등록된 이메일 목록 */}
             <div className="flex flex-wrap gap-2 pt-3 border-t border-gray-100">
                 {emails.map((email) => (
                     <div key={email} className="flex items-center bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
@@ -61,16 +64,16 @@ const EmailDistributionArea = ({ emails, newEmail, onNewEmailChange, onAddEmail,
 );
 
 // ====================================================
-// 2. UrlDistributionArea 컴포넌트
+// 2. UrlDistributionArea 컴포넌트: URL 복사 관련 UI
 // ====================================================
-const UrlDistributionArea = ({ surveyUrl, onUrlChange, onUrlCopy }) => (
+const UrlDistributionArea = ({ surveyUrl, onUrlCopy }) => (
     <div className="p-5 bg-white border rounded-lg shadow-md">
         <h3 className="font-semibold text-lg border-b pb-2 mb-3 text-gray-800">설문 URL</h3>
         <div className="flex items-center gap-3">
             <input
                 type="text"
                 value={surveyUrl}
-                onChange={onUrlChange}
+                readOnly
                 className="flex-grow p-2 border border-gray-300 rounded-md bg-neutral-50 text-gray-600 focus:bg-white focus:ring-blue-500 focus:border-blue-500"
             />
             <button 
@@ -80,92 +83,187 @@ const UrlDistributionArea = ({ surveyUrl, onUrlChange, onUrlCopy }) => (
                 URL 복사
             </button>
         </div>
-        <p className="mt-3 text-sm text-gray-500">URL을 복사하여 다양한 채널(메신저, SNS 등)에 직접 공유하세요.</p>
+        <p className="mt-3 text-sm text-gray-500">URL을 복사하여 다양한 채널(메신저, SNS 등)에 직접 공유하세요。</p>
     </div>
 );
 
 
 // ====================================================
-// 3. SurveyDistributionPage 메인 컴포넌트
+// 3. ApiStatusToast 컴포넌트: API 상태 알림 토스트
 // ====================================================
+const ApiStatusToast = ({ message, type, onClose }) => {
+    const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+    const icon = type === 'success' ? (
+        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    ) : (
+        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    );
+
+    return (
+        <div className={`fixed bottom-10 left-1/2 transform -translate-x-1/2 p-4 text-white text-sm rounded-lg shadow-xl z-50 transition-opacity duration-300 flex items-center ${bgColor}`}>
+            {icon}
+            <span>{message}</span>
+            <button onClick={onClose} className="ml-4 font-bold leading-none">&times;</button>
+        </div>
+    );
+};
+
+
+// ====================================================
+// 4. SurveyDistributionPage 메인 컴포넌트
+// ====================================================
+const SURVEY_UUID_PLACEHOLDER = 'a1b2c3d4-e5f6-7890-1234-567890abcdef';
+
 export default function SurveyDistributionPage() {
+    
+    const { formId: survey_id } = useParams();
+
     // 상태 관리
     const [emails, setEmails] = useState(['user1@test.com', 'user2@boss.com']);
     const [newEmail, setNewEmail] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [distributionType, setDistributionType] = useState('email');
-    const [surveyUrl, setSurveyUrl] = useState('https://yourdomain.com/survey/formId_XXX'); 
+    const [surveyUrl, setSurveyUrl] = useState(
+        // survey_id가 있으면 사용하고, 없으면 플레이스홀더 사용
+        `http://localhost:3000/survey/${survey_id || SURVEY_UUID_PLACEHOLDER}`
+    ); 
     const [showCopyToast, setShowCopyToast] = useState(false); 
     const [emailSubject, setEmailSubject] = useState('[설문 제목] 설문 참여 부탁드립니다.'); 
-    const [emailBody, setEmailBody] = useState('안녕하세요. 저희 설문에 참여해 주시면 감사하겠습니다. \n\n[설문 URL 자리]');
+    const [emailBody, setEmailBody] = useState('안녕하세요. 저희 설문에 참여해 주시면 감사하겠습니다.');
+    const [isLoading, setIsLoading] = useState(false); 
+    
+    // API 통신 결과 상태 추가
+    const [apiMessage, setApiMessage] = useState({ show: false, text: '', type: 'success' });
 
-    // 복사 성공 알림(Toast) 자동 숨김 로직
+    // 토스트 자동 숨김 로직
     useEffect(() => {
-        if (showCopyToast) {
+        if (showCopyToast || apiMessage.show) {
             const timer = setTimeout(() => {
                 setShowCopyToast(false);
-            }, 2000);
+                setApiMessage({ show: false, text: '', type: 'success' });
+            }, 3000); // 3초 후 사라짐
             return () => clearTimeout(timer);
         }
-    }, [showCopyToast]);
+    }, [showCopyToast, apiMessage.show]);
 
     // URL 복사 핸들러 함수
     const handleUrlCopy = (url) => {
-        // navigator.clipboard.writeText()는 Promise를 반환합니다.
-        navigator.clipboard.writeText(url).then(() => {
-            setShowCopyToast(true);
-        }).catch(err => {
+        const tempInput = document.createElement('input');
+        tempInput.value = url;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy'); 
+        
+        try {
+            document.execCommand('copy');
+            setShowCopyToast(true); // 복사 성공 시 토스트 표시
+        } catch (err) {
             console.error('URL 복사 실패:', err);
-        });
+            setApiMessage({ show: true, text: 'URL 복사에 실패했습니다. 직접 복사해주세요.', type: 'error' });
+        }
+        
+        document.body.removeChild(tempInput);
     };
     
     // 이메일 추가 핸들러
     const handleAddEmail = () => {
-        if (newEmail && !emails.includes(newEmail)) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (newEmail && emailRegex.test(newEmail) && !emails.includes(newEmail)) {
             setEmails([...emails, newEmail]);
             setNewEmail('');
+        } else if (newEmail && !emailRegex.test(newEmail)) {
+            setApiMessage({ show: true, text: "유효한 이메일 주소를 입력해주세요.", type: 'error' });
         }
     };
+    
     // 이메일 삭제 핸들러
     const handleDeleteEmail = (emailToDelete) => {
         setEmails(emails.filter(email => email !== emailToDelete));
     };
 
-    // 설문 발송 (API 호출) 핸들러 함수 - Mock 버전
+
+    // 설문 발송 (실제 API 호출) 핸들러 함수
     const sendSurveyByEmail = async () => {
         if (emails.length === 0) {
-            alert("발송할 이메일 주소를 입력해주세요.");
+            // 이메일 주소 누락 확인
+            setApiMessage({ show: true, text: "발송할 이메일 주소를 입력해주세요.", type: 'error' });
+            setIsLoading(false); 
+            return;
+        }
+        
+        // 422 오류 방지: survey_id가 없으면 API 호출을 막고 사용자에게 안내
+        if (!survey_id) {
+            setApiMessage({ show: true, text: "설문 ID가 URL에서 누락되어 발송할 수 없습니다. 올바른 설문 경로를 통해 접근해주세요.", type: 'error' });
+            setIsLoading(false); 
             return;
         }
 
-        console.log("설문 발송 데이터:", {
-            recipients: emails,
-            subject: emailSubject,
-            body: emailBody,
-            surveyLink: surveyUrl
-        });
+        setIsLoading(true); 
+        
+        // 1. 설문 URL 대체
+        const finalBody = emailBody.replace('[설문 URL 자리]', surveyUrl);
 
-        // 실제 API 호출 로직 대신 비동기 처리를 시뮬레이션합니다.
+        // survey_id 변수를 최상위에서 가져와 사용합니다.
+        const dataForPost = {
+            recipient_email: emails, 
+            title: emailSubject, 
+            content: finalBody, 
+            survey_id: survey_id // useParams()로 가져온 값 사용
+        }
+
+        const apiUrl = `http://localhost:8081/emails/create_logs_and_send`; 
+        const token = localStorage.getItem("access_token");
+
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const simulatedSuccess = true; 
+            const res = await axios.post(
+                apiUrl, 
+                dataForPost, 
+                { 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        ...(token && { 'Authorization': `Bearer ${token}` }) 
+                    },
+                    withCredentials: true 
+                }
+            ); 
 
-            if (simulatedSuccess) {
-                alert('설문 발송 요청이 성공적으로 처리되었습니다.');
-            } else {
-                alert(`발송 실패`);
-            }
+            console.log("API 응답:", res.data);
+            // 서버 통신 성공 알림 (Toast) 추가
+            setApiMessage({ show: true, text: '설문 발송 요청이 성공적으로 처리되었습니다.', type: 'success' });
+            
         } catch (error) {
-            console.error('시뮬레이션 중 오류:', error);
-            alert('설문 발송 중 시뮬레이션 오류 발생.');
+            console.error('설문 발송 서버 오류:', error);
+            
+            let errorMessage = '알 수 없는 오류가 발생했습니다.';
+
+            if (error.code === 'ERR_NETWORK' || error.message.includes('Connection refused')) {
+                errorMessage = '서버 연결에 실패했습니다. 백엔드 서버가 8081 포트에서 실행 중인지 확인해 주세요.';
+            } else if (error.response) {
+                const status = error.response.status; 
+                const serverMessage = error.response.data.message || error.response.data.detail || '알 수 없는 서버 오류';
+
+                if (status === 422 || status === 400) {
+                    errorMessage = `발송 실패 (Status: ${status}): ${serverMessage}. 서버 로그를 확인해 주세요.`;
+                } else {
+                    errorMessage = `발송 실패 (Status: ${status}): ${serverMessage}`;
+                }
+            }
+            
+            // 서버 통신 실패 알림 (Toast) 추가
+            setApiMessage({ show: true, text: errorMessage, type: 'error' });
+            
         } finally {
+            setIsLoading(false); 
             setShowPopup(false); 
         }
     };
     
     // 설문 발송 (팝업 띄우기) 핸들러
     const handleSendSurvey = () => {
+        if (emails.length === 0) {
+            setApiMessage({ show: true, text: "발송할 이메일 주소를 최소 하나 이상 추가해주세요.", type: 'error' });
+            return;
+        }
         setShowPopup(true);
     };
 
@@ -173,7 +271,7 @@ export default function SurveyDistributionPage() {
     const handlePopupConfirm = (confirm) => {
         setShowPopup(false);
         if (confirm) {
-            sendSurveyByEmail(); // 확인 시 시뮬레이션 호출
+            sendSurveyByEmail(); // 확인 시 실제 API 호출
         }
     };
 
@@ -223,7 +321,6 @@ export default function SurveyDistributionPage() {
                 ) : (
                     <UrlDistributionArea 
                         surveyUrl={surveyUrl}
-                        onUrlChange={(e) => setSurveyUrl(e.target.value)}
                         onUrlCopy={handleUrlCopy}
                     />
                 )}
@@ -233,10 +330,17 @@ export default function SurveyDistributionPage() {
                     {distributionType === 'email' && (
                         <button
                             onClick={handleSendSurvey}
-                            disabled={emails.length === 0}
-                            className="px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
+                            disabled={emails.length === 0 || isLoading} 
+                            className="flex items-center px-6 py-2 font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
                         >
-                            설문 발송
+                            {isLoading ? (
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            ) : (
+                                '설문 발송'
+                            )}
                         </button>
                     )}
                 </div>
@@ -260,6 +364,15 @@ export default function SurveyDistributionPage() {
                     <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 p-3 bg-gray-800 text-white text-sm rounded-lg shadow-xl z-50 transition-opacity duration-300">
                         설문 URL이 클립보드에 복사되었습니다.
                     </div>
+                )}
+
+                {/* API 통신 상태 토스트 메시지 (성공/실패 피드백용) */}
+                {apiMessage.show && (
+                    <ApiStatusToast 
+                        message={apiMessage.text}
+                        type={apiMessage.type}
+                        onClose={() => setApiMessage({ show: false, text: '', type: 'success' })}
+                    />
                 )}
             </div>
         </div>

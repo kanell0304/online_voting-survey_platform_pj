@@ -43,7 +43,7 @@ export default function App() {
         <Route path="/edit/:formId" element={<MainLayout><EditFormPage /></MainLayout>} />
 
         <Route path="/survey-result" element={<MainLayout><SurveyResultPage /></MainLayout>} />
-        <Route path="/distribute" element={<MainLayout><SurveyDistributionPage /></MainLayout>} />
+        <Route path="/distribute/:formId" element={<MainLayout><SurveyDistributionPage /></MainLayout>} />
       </Routes>
     </Router>
   );
