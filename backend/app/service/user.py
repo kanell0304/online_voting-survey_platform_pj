@@ -40,8 +40,8 @@ class UserService:
 
     @staticmethod
     async def register(db: AsyncSession, user: UserCreate, role_name: str = RoleEnum.USER):
-        if await UserCrud.get_username(db, user.username):
-            raise HTTPException(status_code=400, detail="이미 존재하는 사용자명입니다.")
+        if await UserCrud.get_email(db, user.email):
+            raise HTTPException(status_code=400, detail="이미 존재하는 이메일입니다.")
 
         hashed_pw = await get_pwd_hash(user.password)
         # user_create = UserCreate(username=user.username, phone_number=user.phone_number, password=hashed_pw, email=user.email, role=user.role)
