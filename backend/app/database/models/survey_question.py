@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ..base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Text, Enum, TIMESTAMP, func, ForeignKey, Boolean
+from sqlalchemy import Text, Enum, DateTime, func, ForeignKey, Boolean
 from datetime import datetime
 from typing import List, Optional
 import enum
@@ -25,8 +25,8 @@ class SurveyQuestion(Base):
     survey_id: Mapped[int] = mapped_column(ForeignKey("surveys.survey_id", ondelete="CASCADE"), nullable=False, index=True)
     question_text: Mapped[str] = mapped_column(Text, nullable=False)
     question_type: Mapped[QuestionType] = mapped_column(Enum(QuestionType), nullable=False)
-    created_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), nullable=True)
-    updated_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, server_default=func.now(), onupdate=func.now(), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime, onupdate=func.now(), nullable=True)
     is_required: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
 

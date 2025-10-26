@@ -19,7 +19,7 @@ class SurveyOut(SurveyBase):
     description:str
     created_at:datetime
     expire_at:Optional[datetime]=None
-    updated_at:datetime=None
+    updated_at:Optional[datetime]=None
     is_public:bool=False
     questions:List[SurveyQuestionOut]=Field(default_factory=list)
     

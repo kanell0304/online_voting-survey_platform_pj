@@ -1,7 +1,7 @@
 from ..base import Base
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import BigInteger, TIMESTAMP, func, DateTime, String, JSON, ForeignKey
+from sqlalchemy import BigInteger, DateTime, func, String, JSON, ForeignKey
 from datetime import datetime
 
 # 설문 응답 정보 => 설문지 결과 통계
@@ -18,4 +18,4 @@ class SurveyStats(Base):
 
     stat_kind:Mapped[str]=mapped_column(String(30), index=True, nullable=False) # 통계의 종류/유형
     stat_data:Mapped[dict]=mapped_column(JSON, nullable=False) # 실제 통계 데이터
-    computed_at:Mapped[datetime]=mapped_column(TIMESTAMP, server_default=func.now(), nullable=False) # 통계 생성 시각
+    computed_at:Mapped[datetime]=mapped_column(DateTime, server_default=func.now(), nullable=False) # 통계 생성 시각
