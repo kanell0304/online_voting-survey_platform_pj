@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import FormRenderer from '../Forms/FormRenderer';
 
@@ -7,6 +7,7 @@ export default function ResponsePage() {
   const location = useLocation();
   const { formId } = useParams();
   const [form, setForm] = useState(location.state || { title: "", questions: [] });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if(!location.state && formId){
@@ -41,7 +42,7 @@ export default function ResponsePage() {
       };
       await axios.post("http://localhost:8081/responses/create", payload, {withCredentials: true});
       alert("응답이 성공적으로 제출되었습니다.");
-      navigator("/my-surveys");
+      navigate("/my-surveys");
     }
     catch(err){
       if(err.response){
