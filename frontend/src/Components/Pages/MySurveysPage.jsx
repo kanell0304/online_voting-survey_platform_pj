@@ -57,7 +57,7 @@ useEffect(()=>{
     try{
       const res = await axios.delete(`http://localhost:8081/surveys/${selectSurveyId}`, {withCredentials: true});
       setMySurveys(prevSurveys => prevSurveys.filter(survey => survey.survey_id !== selectSurveyId));
-      alert("삭제되었습니다.");
+      alert("설문지가 삭제되었습니다.");
       setIsDeleteModal(false);
     } catch(err){
       console.error("정보 가져오기 실패:", err)

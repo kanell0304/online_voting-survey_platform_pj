@@ -41,6 +41,7 @@ export default function ResponsePage() {
       };
       await axios.post("http://localhost:8081/responses/create", payload, {withCredentials: true});
       alert("응답이 성공적으로 제출되었습니다.");
+      navigator("/my-surveys");
     }
     catch(err){
       if(err.response){

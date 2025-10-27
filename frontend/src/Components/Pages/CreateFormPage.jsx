@@ -29,7 +29,7 @@ export default function CreateFormPage({ formData, setFormData }) {
         payload,
         {withCredentials: true}
       ); //jwt가 쿠키로 오기때문에 credential true. 만약 여기서 false나오면 바로 catch문으로 이동
-
+      setFormData({title: "", questions: []})
       alert("성공적으로 저장되었습니다!");
       if(window.confirm("공유 하시겠습니까?")){
         navigate(`/distribute/${res.data.survey_id}`); //배포페이지
