@@ -118,6 +118,20 @@ export default function SurveyDistributionPage() {
     
     const { formId: survey_id } = useParams();
 
+    useEffect(() => {
+    (async () => {
+        try {
+            const res = await axios.get(`http://localhost:8081/surveys/${survey_id}`, {withCredentials: true});
+            console.log(res.data.survey_id);
+            console.log(res.data.title);
+            setSurveyTitle(res.data.title);
+        } catch (error) {
+            console.error(error);
+        }})();
+    }, []);
+
+    
+
     // 상태 관리
     const [emails, setEmails] = useState(['user1@test.com', 'user2@boss.com']);
     const [newEmail, setNewEmail] = useState('');
@@ -125,16 +139,22 @@ export default function SurveyDistributionPage() {
     const [distributionType, setDistributionType] = useState('email');
     const [surveyUrl, setSurveyUrl] = useState(
         // survey_id가 있으면 사용하고, 없으면 플레이스홀더 사용
-        `http://localhost:3000/survey/${survey_id || SURVEY_UUID_PLACEHOLDER}`
+        `http://localhost:5173/surveys/${survey_id || SURVEY_UUID_PLACEHOLDER}`
     ); 
     const [showCopyToast, setShowCopyToast] = useState(false); 
-    const [emailSubject, setEmailSubject] = useState('[설문 제목] 설문 참여 부탁드립니다.'); 
+    const [surveyTitle, setSurveyTitle] = useState("설문 제목");
+    const [emailSubject, setEmailSubject] = useState(`[${surveyTitle}] 설문 참여 부탁드립니다.`); 
     const [emailBody, setEmailBody] = useState('안녕하세요. 저희 설문에 참여해 주시면 감사하겠습니다.');
     const [isLoading, setIsLoading] = useState(false); 
     
+    useEffect(() => {
+        setEmailSubject(`[${surveyTitle}] 설문 참여 부탁드립니다.`);
+    }, [surveyTitle]);
+
     // API 통신 결과 상태 추가
     const [apiMessage, setApiMessage] = useState({ show: false, text: '', type: 'success' });
 
+    
     // 토스트 자동 숨김 로직
     useEffect(() => {
         if (showCopyToast || apiMessage.show) {
@@ -201,7 +221,7 @@ export default function SurveyDistributionPage() {
         setIsLoading(true); 
         
         // 1. 설문 URL 대체
-        const finalBody = emailBody.replace('[설문 URL 자리]', surveyUrl);
+        const finalBody = emailBody.replace(`[설문 URL 자리]`, surveyUrl);
 
         // survey_id 변수를 최상위에서 가져와 사용합니다.
         const dataForPost = {

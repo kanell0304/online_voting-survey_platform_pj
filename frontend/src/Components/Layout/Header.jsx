@@ -18,7 +18,7 @@ export default function Header() {
           const res = await axios.get(`http://localhost:8081/users/userme`, {withCredentials: true});
           setUsername(res.data.username)
         } catch(err){
-          console.error("정보 가져오기 실패:", err)
+          console.error("정보 가져오기 실패:", err);
         }
       })();
     }
