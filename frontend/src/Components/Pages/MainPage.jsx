@@ -6,7 +6,7 @@ export default function MainPage() {
 
   // 로그인된 상태에서만 설문생성 가능
   const CreateSurvey = () => {
-    const token = document.cookie.split("; ").find(x => x.startsWith("access_token") == 0);
+    const token = document.cookie.split("; ").find(x => x.startsWith("access_token"));
       // console.log(`CreateFormPage_token: ${token}`);
       if (!token) {
         alert('로그인 후 이용 가능합니다');

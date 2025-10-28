@@ -9,7 +9,7 @@ export default function Header() {
 
   //로그인 여부 확인, 유저네임 가져오기
   useEffect(()=>{
-    const token = document.cookie.split("; ").find(x => x.startsWith("access_token") == 0);
+    const token = document.cookie.split("; ").find(x => x.startsWith("access_token"));
     console.log(token)
     if(token){
       (async () => {
