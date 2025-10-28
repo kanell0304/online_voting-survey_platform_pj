@@ -12,7 +12,7 @@ export default function FormRenderer({ form, onSubmit }) {
   const handleSubmit = async () => {
     for(let i=0; i < form.questions.length; i++){
       const q = form.questions[i];
-      if(q.required){
+      if(q.is_required){
         const a = answers[i];
         if(a === undefined || a === ""){
           alert("필수로 체크된 질문은 작성해주셔야 합니다");
