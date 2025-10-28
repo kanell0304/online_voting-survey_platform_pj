@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.database.database import create_tables
+from backend.app.database.database import create_tables
 from backend.app.middleware.token_refresh import TokenRefreshMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 

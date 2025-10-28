@@ -5,12 +5,12 @@ import FormRenderer from '../Forms/FormRenderer';
 
 export default function ResponsePage() {
   const location = useLocation();
-  const { formId } = useParams();
+  const {formId} = useParams();
   const [form, setForm] = useState(location.state || { title: "", description: "", questions: [] });
   const navigate = useNavigate();
 
   // get으로 특정 survey 정보가져오기
-  useEffect(() => {
+  useEffect(()=>{
     if(!location.state && formId){
       (async ()=>{
         try{

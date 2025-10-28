@@ -4,14 +4,10 @@ import axios from 'axios'
 
 export default function Header() {
   const navigate = useNavigate();
-
-  // 🚨 중요: 이 부분은 나중에 실제 로그인 상태 관리 로직으로 대체해야 합니다.
-  // (예: Context API, Redux, Zustand 등)
-  // 지금은 UI 확인을 위해 false로 설정되어 있습니다. true로 바꾸면 로그인된 화면을 볼 수 있습니다.
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
 
-
+  //로그인 여부 확인, 유저네임 가져오기
   useEffect(()=>{
     const token = document.cookie.split("; ").find(x => x.startsWith("access_token") == 0);
     console.log(token)
@@ -28,22 +24,19 @@ export default function Header() {
     }
     else{
         setIsLoggedIn(false);
-        setUsername("");
     }
   }, [])
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:8081/users/logout', {}, {
-        withCredentials: true
-      });
+      await axios.post('http://localhost:8081/users/logout', {}, {withCredentials: true});
       
       setIsLoggedIn(false);
       setUsername("");
       alert('로그아웃 되었습니다.');
       navigate('/');
-    } catch (err) {
-      console.error("로그아웃 실패:", err);
+    } catch(err){
+      // console.error("로그아웃 실패:", err);
       setIsLoggedIn(false);
       setUsername("");
       alert('로그아웃 처리 중 오류가 발생했습니다.');
@@ -61,39 +54,23 @@ export default function Header() {
               VOTING & SURVEY
             </Link>
           </div>
-
-          {/* 2. 오른쪽: 네비게이션 및 인증 버튼 */}
           <nav className="flex items-center space-x-4">
+            {/* 로그인 ture */}
             {isLoggedIn ? (
-              // 로그인 상태일 때 보여줄 UI
               <>
-                <Link 
-                  to="/my-surveys" 
-                  className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md text-sm"
-                >
+                <Link to="/my-surveys" className="text-gray-600 hover:text-blue-600 font-medium px-3 py-2 rounded-md text-sm">
                   내 설문
                 </Link>
                 <span className="text-gray-700 font-semibold text-sm">{username}님</span>
-                <button 
-                  onClick={handleLogout}
-                  className="text-sm font-medium text-gray-500 hover:text-gray-700"
-                >
-                  로그아웃
-                </button>
+                <button onClick={handleLogout} className="text-sm font-medium text-gray-500 hover:text-blue-600">로그아웃</button>
               </>
             ) : (
-              // 비로그인 상태일 때 보여줄 UI
               <>
-                <Link 
-                  to="/login" 
-                  className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md text-sm"
-                >
+              {/* 로그인 false */}
+                <Link to="/login" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md text-sm">
                   로그인
                 </Link>
-                <Link 
-                  to="/signup" 
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors shadow-sm font-medium text-sm"
-                >
+                <Link to="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors shadow-sm font-medium text-sm">
                   회원가입
                 </Link>
               </>
