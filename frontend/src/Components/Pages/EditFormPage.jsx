@@ -5,7 +5,8 @@ import axios from 'axios';
 export default function EditFormPage(){
   const navigate=useNavigate();
   const {formId} = useParams();
-
+  
+  // 필요한 것들만 가져오기
   const [formData, setFormData]=useState({
     title: "",
     description: "",
@@ -24,7 +25,6 @@ export default function EditFormPage(){
         setLoading(false);
       } catch(err){
         console.error("설문 불러오기 실패:", err);
-        // navigate("/my-surveys");
       }
     })();
   }, [formId, navigate]);

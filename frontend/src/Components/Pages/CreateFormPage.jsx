@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import FormBuilder from '../Forms/FormBuilder';
@@ -12,7 +12,7 @@ export default function CreateFormPage({ formData, setFormData }) {
 
     const payload={
       title: form.title,
-      description: "객관식과 주관식이 혼합된 설문입니다",
+      description: form.description,
       expire_at: "2025-12-31T23:59:59Z",
       questions: form.questions.map((q)=>({
         question_text: q.text,

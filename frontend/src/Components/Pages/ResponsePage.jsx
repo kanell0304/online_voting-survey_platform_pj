@@ -6,9 +6,10 @@ import FormRenderer from '../Forms/FormRenderer';
 export default function ResponsePage() {
   const location = useLocation();
   const { formId } = useParams();
-  const [form, setForm] = useState(location.state || { title: "", questions: [] });
+  const [form, setForm] = useState(location.state || { title: "", description: "", questions: [] });
   const navigate = useNavigate();
 
+  // get으로 특정 survey 정보가져오기
   useEffect(() => {
     if(!location.state && formId){
       (async ()=>{
@@ -23,6 +24,7 @@ export default function ResponsePage() {
     }
   }, [location.state, formId]);
 
+  // front-backend
   const submitResponse = async (answers)=>{
     try{
       const payload={
@@ -40,9 +42,9 @@ export default function ResponsePage() {
           };
         })
       };
-      await axios.post("http://localhost:8081/responses/create", payload, {withCredentials: true});
+      await axios.post("http://localhost:8081/responses/create", payload, {withCredentials: false});
       alert("응답이 성공적으로 제출되었습니다.");
-      navigate("/my-surveys");
+      navigate("/");
     }
     catch(err){
       if(err.response){
@@ -50,6 +52,7 @@ export default function ResponsePage() {
         console.log("응답 제출 실패: " + JSON.stringify(err.response.data));
         // alert("응답 제출 실패: " + JSON.stringify(err.response.data));
       } else{
+        // console.log(form);
         alert("서버 오류로 제출에 실패했습니다.");
       }
     }

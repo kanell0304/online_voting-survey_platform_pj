@@ -20,7 +20,7 @@ import SurveyDistributionPage from './Components/Survey/SurveyDistributionPage.j
 import EditFormPage from './Components/Pages/EditFormPage.jsx';
 
 export default function App() {
-  const [formData, setFormData] = useState({ title: "", questions: [] });
+  const [formData, setFormData] = useState({ title: "", description: "", questions: [] });
 
   return (
     <Router>

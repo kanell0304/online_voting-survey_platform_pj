@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function FormBuilder({ formData, setFormData, onSave }) {
@@ -51,6 +51,7 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
 
         {/* 폼 제목 입력 */}
         <input type="text" placeholder="제목 없는 양식" value={formData.title} onChange={(e)=>setFormData({ ...formData, title:e.target.value})} className="w-full border-b border-gray-400 text-lg p-2 outline-none focus:border-blue-500" />
+        <input placeholder="설명 ex) 이 설문은 000에 관련된 설문입니다" value={formData.description} onChange={(e)=>setFormData({ ...formData, description:e.target.value})} className="w-full border-b border-gray-400 text-lg p-2 outline-none focus:border-blue-500" />
 
         {/* 질문 리스트 */}
         {formData.questions.map((q, i) => (

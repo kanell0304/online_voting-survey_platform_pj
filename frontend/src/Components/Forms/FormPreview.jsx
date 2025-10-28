@@ -10,6 +10,7 @@ export default function FormPreview({ formData }) {
         
         {/* 제목, 돌아가기 */}
         <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">{formData.title || "제목 없음"}</h1>
+        <p className="text-lg text-center text-gray-800">{formData.description || "설명 없음"}</p>
         <button onClick={()=>navigate("/create")} className="text-blue-600 hover:underline">돌아가기</button>
         
         {/* 질문 미리보기 */}

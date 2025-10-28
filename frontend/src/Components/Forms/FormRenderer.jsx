@@ -31,6 +31,7 @@ export default function FormRenderer({ form, onSubmit }) {
 
         {/* 제목 */}
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">{form.title || "제목 없음"}</h2>
+        <p className="text-lg text-center text-gray-800">{form.description || "설명 없음"}</p>
 
         {/* 질문 영역 */}
         <div className="space-y-6">
