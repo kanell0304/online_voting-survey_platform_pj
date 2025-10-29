@@ -6,11 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.router import survey_stats
 from backend.app.router.api_routes_preset import router as service_router
-from app.router import image
-from app.router import email
-from app.router import response
-from app.router import user
-from app.router import survey, survey_question, survey_option
+from backend.app.router import image
+from backend.app.router import email
+from backend.app.router import response
+from backend.app.router import user
+from backend.app.router import survey, survey_question, survey_option
 
 
 @asynccontextmanager

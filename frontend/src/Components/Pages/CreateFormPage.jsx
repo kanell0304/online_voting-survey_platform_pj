@@ -13,7 +13,6 @@ export default function CreateFormPage({ formData, setFormData }) {
     const payload={
       title: form.title,
       description: form.description,
-      expire_at: "2025-12-31T23:59:59Z",
       questions: form.questions.map((q)=>({
         question_text: q.text,
         question_type: q.type === "단답형" ? "short_text" : "single_choice",
@@ -28,7 +27,7 @@ export default function CreateFormPage({ formData, setFormData }) {
         "http://localhost:8081/surveys",
         payload,
         {withCredentials: true}
-      ); //jwt가 쿠키로 오기때문에 credential true. 만약 여기서 false나오면 바로 catch문으로 이동
+      ); //쿠키로 오기때문에 withCredentials
       setFormData({title: "", questions: []})
       alert("성공적으로 저장되었습니다!");
       if(window.confirm("공유 하시겠습니까?")){
