@@ -41,11 +41,11 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
 
   return (
     <div className="flex justify-center py-10 bg-gray-50 min-h-screen">
-      <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-8 space-y-6 border border-gray-200">
+      <div className="w-full max-w-3xl bg-red-50 shadow-lg rounded-xl p-8 space-y-6 border border-gray-200">
 
         {/* 상단 제목 + 미리보기 버튼 */}
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-bold">Create Form</h1>
+          <h1 className="text-4xl font-bold text-amber-800 text-shadow-2xs">Create Form</h1>
           <button onClick={()=>navigate("/preview")} className="text-blue-600 hover:underline">미리보기</button>
         </div>
 
@@ -55,7 +55,7 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
 
         {/* 질문 리스트 */}
         {formData.questions.map((q, i) => (
-          <div key={i} className="bg-[#f8f6ef] border border-gray-300 rounded-lg p-4 space-y-3">
+          <div key={i} className="bg-purple-50 border border-gray-300 rounded-lg p-4 space-y-3">
             <div className="flex items-center space-x-3">
 
               {/* 질문 입력 */}

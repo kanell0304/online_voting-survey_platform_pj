@@ -50,9 +50,9 @@ export default function EditFormPage(){
   if (loading) return <div className="text-center py-20">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-neutral-50 py-8 flex justify-center">
-      <div className="w-full max-w-2xl bg-gray-50 shadow-lg rounded-xl p-8 border border-gray-200 space-y-6">
-        <h1 className="text-2xl font-bold">설문 수정</h1>
+    <div className=" bg-neutral-50 py-8 flex justify-center">
+      <div className="w-full max-w-2xl bg-purple-50 shadow-lg rounded-xl p-8 border border-gray-200 space-y-6">
+        <h1 className="text-4xl font-bold text-amber-800 text-shadow-2xs">정보 수정</h1>
 
         <div className="space-y-4">
           <div>
@@ -71,7 +71,7 @@ export default function EditFormPage(){
           </div>
         </div>
 
-        <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700">저장하기</button>
+        <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">저장하기</button>
 
       </div>
     </div>

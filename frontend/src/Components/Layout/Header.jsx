@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import logo from '../../assets/logo.jpg'
 
 export default function Header() {
   const navigate = useNavigate();
@@ -48,31 +49,19 @@ export default function Header() {
     <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* 1. 왼쪽: 로고 */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors">
-              VOTING & SURVEY
-            </Link>
-          </div>
+          <Link to="/"><img src={logo} alt="formz logo" className='w-30' /></Link>
+
           <nav className="flex items-center space-x-4">
-            {/* 로그인 ture */}
             {isLoggedIn ? (
-              <>
-                <Link to="/my-surveys" className="text-gray-600 hover:text-blue-600 font-medium px-3 py-2 rounded-md text-sm">
-                  내 설문
-                </Link>
-                <span className="text-gray-700 font-semibold text-sm">{username}님</span>
-                <button onClick={handleLogout} className="text-sm font-medium text-gray-500 hover:text-blue-600">로그아웃</button>
-              </>
+              <div>
+                <Link to="/my-surveys" className="hover:text-blue-600 font-medium px-3 py-2 text-sm">내 설문</Link>
+                <span className="font-bold px-3 py-2 text-sm">{username}님</span>
+                <button onClick={handleLogout} className="text-sm font-medium hover:text-blue-600">로그아웃</button>
+              </div>
             ) : (
               <>
-              {/* 로그인 false */}
-                <Link to="/login" className="text-gray-600 hover:text-blue-600 transition-colors font-medium px-3 py-2 rounded-md text-sm">
-                  로그인
-                </Link>
-                <Link to="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors shadow-sm font-medium text-sm">
-                  회원가입
-                </Link>
+                <Link to="/login" className="text-gray-600 hover:text-blue-600 font-medium px-3 py-2 text-sm">로그인</Link>
+                <Link to="/signup" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-sm text-sm">회원가입</Link>
               </>
             )}
           </nav>
