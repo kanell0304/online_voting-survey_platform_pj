@@ -27,17 +27,19 @@ export default function FormRenderer({ form, onSubmit }) {
 
   return (
     <div className="min-h-screen flex justify-center py-12">
-      <div className="w-full max-w-2xl bg-[#f5f5dc] shadow-lg rounded-2xl p-8 border border-gray-200">
-
+      <div className="w-full max-w-2xl bg-blue-100 shadow-lg rounded-2xl p-8 border border-gray-200">
         {/* 제목 */}
-        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">{form.title || "제목 없음"}</h2>
-        <p className="text-lg text-center text-gray-800">{form.description || "설명 없음"}</p>
+        <div className="h-2 bg-blue-600 w-full"/>
+        <div className='p-5 bg-gray-100 border border-gray-300 mb-5'>
+          <h1 className="text-3xl font-bold mb-3 text-gray-800">{form.title || "제목 없음"}</h1>
+          <p className="space-y-3 text-gray-800 text-lg ">{form.description || ""}</p>
+        </div>
 
         {/* 질문 영역 */}
-        <div className="space-y-6">
+        <div className="space-y-3">
           {form.questions.map((q, i)=>(
             <div key={i} className="p-5 bg-gray-50 rounded-xl border border-gray-300 hover:border-blue-400 transition">
-              <div className="mb-3 font-semibold text-gray-800">
+              <div className="mb-2 font-semibold text-gray-800">
                 {i + 1}. {q.question_text}{q.is_required && <span className="text-red-500 ml-1">(필수)</span>}
               </div>
 
@@ -62,7 +64,7 @@ export default function FormRenderer({ form, onSubmit }) {
         </div>
 
         {/* 제출 */}
-          <button onClick={handleSubmit} className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 active:scale-95 transition">제출</button>
+          <button onClick={handleSubmit} className="px-6 py-2 m-3 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 active:scale-95 transition">제출</button>
       </div>
     </div>
   );
