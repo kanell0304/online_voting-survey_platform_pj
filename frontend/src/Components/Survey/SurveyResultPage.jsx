@@ -88,6 +88,8 @@ export default function SurveyResultPage() {
                 
                 if (response.data && response.data.success && response.data.data) {
                     setResultData(response.data.data);
+                    // 데이터 구조 확인을 위한 로그
+                    console.log("주관식 질문 데이터:", response.data.data.short_text_questions);
                 } else {
                     throw new Error("응답 데이터 구조가 올바르지 않습니다.");
                 }
@@ -420,20 +422,67 @@ export default function SurveyResultPage() {
                                                         {/* 확장된 주관식 응답 리스트 */}
                                                         {isExpanded && (
                                                             <div className="px-4 pb-4 pt-2 border-t border-gray-200 bg-white max-h-96 overflow-y-auto">
-                                                                {question.responses && question.responses.length > 0 ? (
-                                                                    <div className="space-y-2">
-                                                                        {question.responses.map((resp, respIdx) => (
-                                                                            <div key={respIdx} className="py-2 border-b border-gray-100 last:border-0">
-                                                                                <span className="text-xs text-gray-400 mr-2">{respIdx + 1}.</span>
-                                                                                <span className="text-sm text-gray-700">
-                                                                                    {resp.text || resp.answer || resp}
-                                                                                </span>
+                                                                {(() => {
+                                                                    // 데이터 구조에 맞춰 응답 리스트 추출
+                                                                    let answerList = [];
+                                                                    
+                                                                    // answerList 필드 확인 (백엔드에서 제공하는 실제 필드명)
+                                                                    if (question.answerList && Array.isArray(question.answerList) && question.answerList.length > 0) {
+                                                                        answerList = question.answerList;
+                                                                    } 
+                                                                    // sample_responses가 있으면 표시
+                                                                    else if (question.sample_responses && Array.isArray(question.sample_responses) && question.sample_responses.length > 0) {
+                                                                        answerList = question.sample_responses;
+                                                                    }
+                                                                    // 다른 가능한 필드명들
+                                                                    else if (question.responses && Array.isArray(question.responses)) {
+                                                                        answerList = question.responses;
+                                                                    } else if (question.answers && Array.isArray(question.answers)) {
+                                                                        answerList = question.answers;
+                                                                    } else if (question.text_responses && Array.isArray(question.text_responses)) {
+                                                                        answerList = question.text_responses;
+                                                                    }
+                                                                    
+                                                                    if (answerList.length > 0) {
+                                                                        return (
+                                                                            <div className="space-y-2">
+                                                                                {answerList.map((resp, respIdx) => {
+                                                                                    // 다양한 형태의 응답 처리
+                                                                                    let answerText = '';
+                                                                                    
+                                                                                    if (typeof resp === 'string') {
+                                                                                        answerText = resp;
+                                                                                    } else if (resp.text) {
+                                                                                        answerText = resp.text;
+                                                                                    } else if (resp.answer) {
+                                                                                        answerText = resp.answer;
+                                                                                    } else if (resp.answer_text) {
+                                                                                        answerText = resp.answer_text;
+                                                                                    } else if (resp.response) {
+                                                                                        answerText = resp.response;
+                                                                                    } else {
+                                                                                        answerText = JSON.stringify(resp);
+                                                                                    }
+                                                                                    
+                                                                                    return (
+                                                                                        <div key={respIdx} className="py-2 border-b border-gray-100 last:border-0">
+                                                                                            <span className="text-xs text-gray-400 mr-2">{respIdx + 1}.</span>
+                                                                                            <span className="text-sm text-gray-700">
+                                                                                                {answerText}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    );
+                                                                                })}
                                                                             </div>
-                                                                        ))}
-                                                                    </div>
-                                                                ) : (
-                                                                    <p className="text-sm text-gray-400 py-2">응답 데이터가 없습니다.</p>
-                                                                )}
+                                                                        );
+                                                                    } else {
+                                                                        return (
+                                                                            <div className="text-sm text-gray-400 py-2">
+                                                                                <p>아직 제출된 응답이 없습니다.</p>
+                                                                            </div>
+                                                                        );
+                                                                    }
+                                                                })()}
                                                             </div>
                                                         )}
                                                     </div>
