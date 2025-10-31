@@ -106,7 +106,7 @@ useEffect(()=>{
         </div>
         <div>
         {isDeleteModal && (
-          <div className="fixed inset-0 bg-black bg-black/20 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
               <h2 className="text-xl font-bold mb-4 text-gray-800">삭제 확인</h2>
               <p className="text-gray-600 mb-6">해당 설문지을 정말 삭제하시겠습니까?<br />삭제된 설문지 데이터는 복구할 수 없습니다.</p>

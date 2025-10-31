@@ -133,7 +133,7 @@ export default function SurveyDistributionPage() {
     
 
     // 상태 관리
-    const [emails, setEmails] = useState(['user1@test.com', 'user2@boss.com']);
+    const [emails, setEmails] = useState([]);
     const [newEmail, setNewEmail] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [distributionType, setDistributionType] = useState('email');
