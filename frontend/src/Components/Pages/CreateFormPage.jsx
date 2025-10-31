@@ -7,7 +7,7 @@ export default function CreateFormPage({ formData, setFormData }) {
   const navigate = useNavigate();
 
   const saveToServer = async (form)=>{
-    const ok = window.confirm("이대로 폼을 제출하시겠습니까?");
+    const ok = window.confirm("이후에는 제목, 설명, 마감기한만 수정할 수 있습니다. 폼을 생성하시겠습니까?");
     if(!ok)return;
 
     const payload={
@@ -40,7 +40,7 @@ export default function CreateFormPage({ formData, setFormData }) {
     catch(err){
       console.error("서버 오류:", err);
       if(err.response){
-        alert('로그인 후 이용 가능합니다')
+        alert('로그인 후 이용 가능합니다.')
         navigate("/login"); //로그인 안되면 바로 로그인창으로
       }
     }
