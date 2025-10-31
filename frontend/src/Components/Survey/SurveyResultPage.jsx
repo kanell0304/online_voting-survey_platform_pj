@@ -63,6 +63,7 @@ export default function SurveyResultPage() {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('response'); 
     const [activeResponseTab, setActiveResponseTab] = useState('single');
+    const [expandedQuestions, setExpandedQuestions] = useState({}); // 확장된 질문 추적
 
     // 컴포넌트 마운트 시 설문 결과 데이터 불러오기
     useEffect(() => {
@@ -140,6 +141,14 @@ export default function SurveyResultPage() {
     // 탭 전환 핸들러
     const handleTabChange = (tabName) => { setActiveTab(tabName); };
     const handleResponseTabChange = (tabName) => { setActiveResponseTab(tabName); };
+    
+    // 질문 확장/축소 핸들러
+    const toggleQuestion = (questionId) => {
+        setExpandedQuestions(prev => ({
+            ...prev,
+            [questionId]: !prev[questionId]
+        }));
+    };
 
     // 메인 탭 스타일 (응답/통계)
     const getTabClass = (tabName) => { 
@@ -309,21 +318,66 @@ export default function SurveyResultPage() {
                                     {activeResponseTab === 'single' ? (
                                         // 객관식 질문 목록
                                         single_choice_questions.length > 0 ? (
-                                            single_choice_questions.map((question, index) => (
-                                                <div 
-                                                    key={question.question_id || index} 
-                                                    className="p-4 border rounded-lg bg-neutral-50 shadow-sm border-l-4 border-green-400"
-                                                >
-                                                    <p className="font-semibold text-gray-700">
-                                                        Q{index + 1}. {question.question_text}
-                                                    </p>
-                                                    <p className="text-sm text-gray-500 mt-1">
-                                                        총 응답 수: <span className="font-bold text-green-600">
-                                                            {question.total_responses || response_count}
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                            ))
+                                            single_choice_questions.map((question, index) => {
+                                                const questionId = `single-${question.question_id || index}`;
+                                                const isExpanded = expandedQuestions[questionId];
+                                                
+                                                return (
+                                                    <div 
+                                                        key={question.question_id || index} 
+                                                        className="border rounded-lg bg-neutral-50 shadow-sm border-l-4 border-green-400 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                                                        onClick={() => toggleQuestion(questionId)}
+                                                    >
+                                                        <div className="p-4">
+                                                            <div className="flex items-start justify-between">
+                                                                <p className="font-semibold text-gray-700 flex-1">
+                                                                    Q{index + 1}. {question.question_text}
+                                                                </p>
+                                                                <svg 
+                                                                    className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                                                                    fill="none" 
+                                                                    stroke="currentColor" 
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <p className="text-sm text-gray-500 mt-1">
+                                                                총 응답 수: <span className="font-bold text-green-600">
+                                                                    {question.total_responses || response_count}
+                                                                </span>
+                                                            </p>
+                                                        </div>
+                                                        
+                                                        {/* 확장된 상세 응답 데이터 */}
+                                                        {isExpanded && (
+                                                            <div className="px-4 pb-4 pt-2 border-t border-gray-200 bg-white">
+                                                                {question.options && question.options.length > 0 ? (
+                                                                    <div className="space-y-2">
+                                                                        {question.options.map((option, optIdx) => (
+                                                                            <div key={optIdx} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                                                                                <span className="text-sm text-gray-700">
+                                                                                    {optIdx + 1}. {option.text || option.option_text || `옵션 ${optIdx + 1}`}
+                                                                                </span>
+                                                                                <div className="flex items-center gap-3">
+                                                                                    <span className="text-sm font-semibold text-gray-900">
+                                                                                        {option.count || 0}명
+                                                                                    </span>
+                                                                                    <span className="text-sm text-green-600 font-bold">
+                                                                                        ({option.percentage || 0}%)
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                ) : (
+                                                                    <p className="text-sm text-gray-400 py-2">응답 데이터가 없습니다.</p>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })
                                         ) : (
                                             <div className="h-40 flex items-center justify-center text-gray-500 border border-dashed rounded-xl">
                                                 객관식 질문이 없거나 데이터가 없습니다.
@@ -332,21 +386,59 @@ export default function SurveyResultPage() {
                                     ) : (
                                         // 주관식 질문 목록
                                         short_text_questions.length > 0 ? (
-                                            short_text_questions.map((question, index) => (
-                                                <div 
-                                                    key={question.question_id || index} 
-                                                    className="p-4 border rounded-lg bg-neutral-50 shadow-sm border-l-4 border-blue-400"
-                                                >
-                                                    <p className="font-semibold text-gray-700">
-                                                        Q{index + 1}. {question.question_text}
-                                                    </p>
-                                                    <p className="text-sm text-gray-500 mt-1">
-                                                        총 응답 수: <span className="font-bold text-blue-600">
-                                                            {question.total_responses || response_count}
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                            ))
+                                            short_text_questions.map((question, index) => {
+                                                const questionId = `text-${question.question_id || index}`;
+                                                const isExpanded = expandedQuestions[questionId];
+                                                
+                                                return (
+                                                    <div 
+                                                        key={question.question_id || index} 
+                                                        className="border rounded-lg bg-neutral-50 shadow-sm border-l-4 border-blue-400 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                                                        onClick={() => toggleQuestion(questionId)}
+                                                    >
+                                                        <div className="p-4">
+                                                            <div className="flex items-start justify-between">
+                                                                <p className="font-semibold text-gray-700 flex-1">
+                                                                    Q{index + 1}. {question.question_text}
+                                                                </p>
+                                                                <svg 
+                                                                    className={`w-5 h-5 text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                                                                    fill="none" 
+                                                                    stroke="currentColor" 
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <p className="text-sm text-gray-500 mt-1">
+                                                                총 응답 수: <span className="font-bold text-blue-600">
+                                                                    {question.total_responses || response_count}
+                                                                </span>
+                                                            </p>
+                                                        </div>
+                                                        
+                                                        {/* 확장된 주관식 응답 리스트 */}
+                                                        {isExpanded && (
+                                                            <div className="px-4 pb-4 pt-2 border-t border-gray-200 bg-white max-h-96 overflow-y-auto">
+                                                                {question.responses && question.responses.length > 0 ? (
+                                                                    <div className="space-y-2">
+                                                                        {question.responses.map((resp, respIdx) => (
+                                                                            <div key={respIdx} className="py-2 border-b border-gray-100 last:border-0">
+                                                                                <span className="text-xs text-gray-400 mr-2">{respIdx + 1}.</span>
+                                                                                <span className="text-sm text-gray-700">
+                                                                                    {resp.text || resp.answer || resp}
+                                                                                </span>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                ) : (
+                                                                    <p className="text-sm text-gray-400 py-2">응답 데이터가 없습니다.</p>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })
                                         ) : (
                                             <div className="h-40 flex items-center justify-center text-gray-500 border border-dashed rounded-xl">
                                                 주관식 질문이 없거나 데이터가 없습니다.
@@ -356,13 +448,13 @@ export default function SurveyResultPage() {
                                 </div>
                             </div>
                         ) : (
-                            // 통계 탭
+                            // 통계 탭 콘텐츠 (향후 구현 예정)
                             <div className="p-6 bg-white border rounded-xl shadow-lg">
                                 <h3 className="text-xl font-semibold border-b pb-3 mb-5 text-gray-700">
                                     설문 통계 분석
                                 </h3>
                                 <div className="h-64 flex items-center justify-center text-gray-500 border border-dashed rounded-xl">
-                                    <p className="text-lg">통계 차트</p>
+                                    <p className="text-lg">통계 차트 기능 개발 예정</p>
                                 </div>
                             </div>
                         )}
