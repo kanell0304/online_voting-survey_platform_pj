@@ -54,9 +54,9 @@ export default function Header() {
           <nav className="flex items-center space-x-4">
             {isLoggedIn ? (
               <div>
-                <Link to="/my-surveys" className="hover:text-blue-600 font-medium px-3 py-2 text-sm">내 설문</Link>
                 <span className="font-bold px-3 py-2 text-sm">{username}님</span>
-                <button onClick={handleLogout} className="text-sm font-medium hover:text-blue-600">로그아웃</button>
+                <Link to="/my-surveys" className="hover:text-blue-600 font-medium px-3 py-2 text-sm">나의 설문</Link>
+                <button onClick={handleLogout} className="px-3 py-2 text-sm font-medium hover:text-blue-600 cursor-pointer">로그아웃</button>
               </div>
             ) : (
               <>
