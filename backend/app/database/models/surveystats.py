@@ -9,7 +9,7 @@ class SurveyStats(Base):
     __tablename__="survey_stats"
 
     id:Mapped[int]=mapped_column(BigInteger, primary_key=True, index=True, autoincrement=True)
-    survey_id:Mapped[int]=mapped_column(ForeignKey("surveys.survey_id"), index=True, nullable=False)
+    survey_id:Mapped[int]=mapped_column(ForeignKey("surveys.survey_id", ondelete="CASCADE"), index=True, nullable=False)
     question_id:Mapped[Optional[int]]=mapped_column(ForeignKey("survey_questions.question_id"), index=True, nullable=True)
     period_start:Mapped[Optional[datetime]]=mapped_column(DateTime, index=True, nullable=True) # 통계 집계 시작 시간
     period_end:Mapped[Optional[datetime]]=mapped_column(DateTime, index=True, nullable=True) # 통계 집계 종료 시간

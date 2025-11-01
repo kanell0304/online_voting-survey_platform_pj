@@ -14,6 +14,6 @@ class EmailLog(Base):
     title: Mapped[str] = mapped_column(String(100), nullable=False) # 제목
     content: Mapped[str] = mapped_column(String(500), nullable=False) # 내용
     created_at:Mapped[datetime]=mapped_column(DateTime, server_default=func.now(), nullable=False) # 생성 일
-    survey_id:Mapped[int]=mapped_column(ForeignKey("surveys.survey_id"), nullable=False) # 설문지 번호
+    survey_id:Mapped[int]=mapped_column(ForeignKey("surveys.survey_id", ondelete="CASCADE"), nullable=False) # 설문지 번호
 
     surveys: Mapped["Surveys"] = relationship("Surveys", back_populates="email_logs")

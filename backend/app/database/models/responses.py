@@ -9,7 +9,7 @@ class Response(Base):
     __tablename__ = "responses" # 설문 응답
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True,index=True)
-    survey_id: Mapped[int] = mapped_column(ForeignKey("surveys.survey_id"), nullable=False) # 설문지 번호
+    survey_id: Mapped[int] = mapped_column(ForeignKey("surveys.survey_id", ondelete="CASCADE"), nullable=False) # 설문지 번호
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=True) # 설문 응답자 아이디정보, null가능 -> 값이 존재하지 않으면 익명
     submitted_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False) # 응답 제출 시간
 
