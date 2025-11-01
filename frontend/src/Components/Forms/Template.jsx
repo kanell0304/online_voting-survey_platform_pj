@@ -12,10 +12,25 @@ export default function Template({ formData, setFormData }) {
       {text: "소속을 입력해주세요", type: "단답형", is_required: false},
     ],
 
-    고객만족도:[
-      {text: "서비스 만족도를 평가해주세요", type:"객관식", is_required: true, options:["좋음", "보통", "나쁨"]},
-    ]
+    강의평가: [
+      {text: "강의 만족도를 평가해주세요", type: "객관식", is_required: true, options: ["매우 만족", "만족", "보통", "불만족"]},
+      {text: "강사에 대한 의견을 작성해주세요", type: "장문형", is_required: false},
+    ],
 
+    작업요청: [
+      {text: "요청하실 작업 내용을 작성해주세요", type: "장문형", is_required: true},
+      {text: "작업 긴급도는 어느 정도인가요?", type: "객관식", is_required: true, options: ["높음", "보통", "낮음"]},
+    ],
+
+    고객만족도:[
+      {text: "서비스 만족도를 평가해주세요", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족"]},
+      {text: "재방문 의사가 있나요?", type: "객관식", is_required: true, options: ["있음", "없음"]}
+    ],
+
+    방문후기: [
+      {text: "방문 후 느낀 점을 작성해주세요", type: "장문형", is_required: false},
+      {text: "추천 의사가 있나요?", type: "객관식", is_required: true, options: ["추천함", "추천하지 않음"]},
+    ]
   };
 
   // 템플릿 가져오기(기존 질문 뒤 새로 추가 가능)
