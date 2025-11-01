@@ -2,27 +2,24 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Template from './Template';
 
-export default function FormBuilder({ formData, setFormData, onSave }) {
+export default function FormBuilder({formData, setFormData, onSave}) {
   const navigate = useNavigate();
   
   // 질문 추가
-  const addQuestion = () => {
+  const add = () => {
     const nq = {text:"", type:"단답형", is_required:false, options:[]};
-    setFormData({
-      ...formData,
-      questions:[...formData.questions, nq]
-    });
+    setFormData({...formData, questions:[...formData.questions, nq]});
   };
 
   // 질문 수정
-  const updateQuestion = (idx, updated) => {
+  const update = (idx, updated) => {
     const nq = [...formData.questions];
     nq[idx] = {...nq[idx], ...updated};
     setFormData({...formData, questions: nq});
   };
 
   // 질문 복사
-  const copyQuestion = (idx) => {
+  const copy = (idx) => {
     const nq = [...formData.questions];
     nq.splice(idx + 1, 0, {...nq[idx]});
     setFormData({...formData, questions: nq});
@@ -34,8 +31,13 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
     setFormData({...formData, questions: nq});
   };
 
+  //모든 질문 삭제
+  const deleteAll = () => {
+    setFormData({...formData, questions: []});
+  };
+
   // 폼 저장 / 우선 이대로 시도
-  const handleSave = () => {
+  const save = () => {
     if (onSave) onSave(formData);
   };
 
@@ -66,7 +68,7 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
               <input type="text" placeholder="질문을 입력하세요." value={q.text} onChange={(e) => updateQuestion(i, { text: e.target.value })} className="flex-1 border-b border-gray-400 p-2 outline-none focus:border-blue-500" />
 
               {/* 질문 유형 선택(단답형, 객관식) */}
-              <select value={q.type} onChange={(e) => updateQuestion(i,{type: e.target.value})} className="border rounded-md p-2 text-xs">
+              <select value={q.type} onChange={(e) => update(i,{type: e.target.value})} className="border rounded-md p-2 text-xs">
                 <option>단답형</option>
                 <option>객관식</option>
               </select>
@@ -79,28 +81,28 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
                     <input type="text" value={opt} placeholder="옵션 입력" onChange={(e) => {
                         const newOpts = [...q.options];
                         newOpts[j] = e.target.value;
-                        updateQuestion(i, { options: newOpts });
+                        update(i, { options: newOpts });
                       }}
                       className="border-b flex-1 p-1 text-xs" />
                     <button onClick={()=> {
                         const newOpts = q.options.filter((_, k) => k !== j);
-                        updateQuestion(i, {options: newOpts});
+                        update(i, {options: newOpts});
                       }}
                       className="text-xs hover:text-rose-500">삭제</button>
                   </div>
                 ))}
-                <button onClick={()=>updateQuestion(i, {options:[...q.options, ""]})} className="text-blue-500 text-xs hover:underline">+ 옵션 추가</button>
+                <button onClick={()=>update(i, {options:[...q.options, ""]})} className="text-blue-500 text-xs hover:underline">+ 옵션 추가</button>
               </div>
             )}
 
             {/* 필수선택, 복사, 삭제 버튼 */}
             <div className="flex items-center justify-between pt-2 border-t border-gray-300 mt-3">
               <label className="flex items-center space-x-1.5 cursor-pointer">
-                <input type="checkbox" checked={q.is_required || false} onChange={(e)=>updateQuestion(i, { is_required: e.target.checked ? true : false })} className="w-3.5 h-3.5 cursor-pointer" />
+                <input type="checkbox" checked={q.is_required || false} onChange={(e)=>update(i, { is_required: e.target.checked ? true : false })} className="w-3.5 h-3.5 cursor-pointer" />
                 <span className="text-xs leading-none">필수</span>
               </label>
               <div className="flex items-center space-x-4">
-                <button onClick={()=>copyQuestion(i)} className="hover:text-blue-600 text-xs leading-none">복사</button>
+                <button onClick={()=>copy(i)} className="hover:text-blue-600 text-xs leading-none">복사</button>
                 <button onClick={() => deleteQuestion(i)} className="hover:text-rose-500 text-xs leading-none">삭제</button>
               </div>
             </div>
@@ -108,8 +110,11 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
         ))}
 
         <div className="flex justify-between pt-6">
-          <button onClick={addQuestion} className=" hover:bg-blue-50 px-3 py-2 text-sm rounded-lg">+ 새 질문 추가</button>
-          <button onClick={handleSave} className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">저장하기</button>
+          <div className="flex space-x-2">
+            <button onClick={add} className=" hover:bg-blue-50 px-3 py-2 text-sm rounded-lg">+ 새 질문 추가</button>
+            <button onClick={deleteAll} className="hover:bg-rose-50 px-3 py-2 text-sm rounded-lg text-rose-500">전체삭제</button>
+          </div>
+          <button onClick={save} className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">저장하기</button>
         </div>
       </div>
     </div>

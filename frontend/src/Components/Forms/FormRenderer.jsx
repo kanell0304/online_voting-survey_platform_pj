@@ -9,7 +9,7 @@ export default function FormRenderer({ form, onSubmit }) {
   };
 
   // 필수 체크한 질문 안할 경우 alert
-  const handleSubmit = async () => {
+  const submit = async () => {
     for(let i=0; i < form.questions.length; i++){
       const q = form.questions[i];
       if(q.is_required){
@@ -64,7 +64,7 @@ export default function FormRenderer({ form, onSubmit }) {
         </div>
 
         {/* 제출 */}
-          <button onClick={handleSubmit} className="px-6 py-2 m-3 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 active:scale-95 transition">제출</button>
+          <button onClick={submit} className="px-6 py-2 m-3 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 active:scale-95 transition">제출</button>
       </div>
     </div>
   );

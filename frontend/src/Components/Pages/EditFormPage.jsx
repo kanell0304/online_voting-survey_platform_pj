@@ -29,7 +29,7 @@ export default function EditFormPage(){
     })();
   }, [formId, navigate]);
 
-  const handleSave = async ()=>{
+  const save = async ()=>{
     try{
       const payload={
         title: formData.title,
@@ -71,7 +71,7 @@ export default function EditFormPage(){
           </div>
         </div>
         <div className='flex justify-end'>
-          <button onClick={handleSave} className="px-4 py-2 bg-blue-600 cursor-pointer text-white rounded-lg shadow hover:bg-blue-700">저장하기</button>
+          <button onClick={save} className="px-4 py-2 bg-blue-600 cursor-pointer text-white rounded-lg shadow hover:bg-blue-700">저장하기</button>
         </div>
 
       </div>
