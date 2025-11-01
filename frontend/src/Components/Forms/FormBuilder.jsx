@@ -65,7 +65,7 @@ export default function FormBuilder({formData, setFormData, onSave}) {
             <div className="flex items-center space-x-3">
 
               {/* 질문 입력 */}
-              <input type="text" placeholder="질문을 입력하세요." value={q.text} onChange={(e) => updateQuestion(i, { text: e.target.value })} className="flex-1 border-b border-gray-400 p-2 outline-none focus:border-blue-500" />
+              <input type="text" placeholder="질문을 입력하세요." value={q.text} onChange={(e) => update(i, { text: e.target.value })} className="flex-1 border-b border-gray-400 p-2 outline-none focus:border-blue-500" />
 
               {/* 질문 유형 선택(단답형, 객관식) */}
               <select value={q.type} onChange={(e) => update(i,{type: e.target.value})} className="border rounded-md p-2 text-xs">
