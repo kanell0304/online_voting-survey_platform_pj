@@ -7,29 +7,33 @@ export default function Template({ formData, setFormData }) {
   // 템플릿 데이터
   const data={
     인적사항:[
-      {text: "이름을 입력하세요", type: "단답형", is_required: true},
-      {text: "성별을 선택하세요", type: "객관식", is_required: true, options: ["남성", "여성"]},
-      {text: "소속을 입력해주세요", type: "단답형", is_required: false},
+      {text: "이름을 입력해주세요", type: "단답형", is_required: true},
+      {text: "성별을 선택해주세요", type: "객관식", is_required: true, options: ["남성", "여성"]},
+      {text: "연령대를 선택해주세요", type: "객관식", is_required: true, options: ["10대", "20대", "30대", "40대 이상"]},
+      {text: "주소를 입력해주세요", type: "단답형", is_required: false},
+      {text: "핸드폰 번호를 입력해주세요", type: "단답형", is_required: false}
     ],
 
     강의평가: [
       {text: "강의 만족도를 평가해주세요", type: "객관식", is_required: true, options: ["매우 만족", "만족", "보통", "불만족"]},
-      {text: "강사에 대한 의견을 작성해주세요", type: "장문형", is_required: false},
-    ],
-
-    작업요청: [
-      {text: "요청하실 작업 내용을 작성해주세요", type: "장문형", is_required: true},
-      {text: "작업 긴급도는 어느 정도인가요?", type: "객관식", is_required: true, options: ["높음", "보통", "낮음"]},
+      {text: "강의 내용이 실무에 도움이 되었나요?", type: "객관식", is_required: true, options:["네", "아니요"]},
+      {text: "강의에 대한 추가 피드백을 작성해주세요", type: "단답형", is_required: false}
     ],
 
     고객만족도:[
-      {text: "서비스 만족도를 평가해주세요", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족"]},
-      {text: "재방문 의사가 있나요?", type: "객관식", is_required: true, options: ["있음", "없음"]}
+      {text: "직원의 응대 태도에 만족하셨나요?", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족", "매우 불만족"]},
+      {text: "가격 대비 만족도는 어떠셨나요?", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족", "매우 불만족"]},
+      {text: "재방문 의사가 있나요?", type: "객관식", is_required: true, options: ["있음", "없음"]},
+      {text: "개선이 필요하다고 느낀 점이 있나요?", type:"단답형", is_required: false}
     ],
 
     방문후기: [
-      {text: "방문 후 느낀 점을 작성해주세요", type: "장문형", is_required: false},
-      {text: "추천 의사가 있나요?", type: "객관식", is_required: true, options: ["추천함", "추천하지 않음"]},
+      {text: "방문하신 날짜를 입력해주세요", type:"단답형", is_required: true},
+      {text: "매장 청결 상태는 어땠나요?", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족", "매우 불만족"]},
+      {text: "직원의 친절도는 어땠나요?", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족", "매우 불만족"]},
+      {text: "방문 후 느낀 점을 작성해주세요", type: "단답형", is_required: false},
+      {text: "주변 지인에게 이곳을 추천하고 싶나요?", type: "객관식", is_required: false, options:["네", "아니요"]},
+      {text: "추천 의사가 있나요?", type: "객관식", is_required: true, options: ["추천함", "추천하지 않음"]}
     ]
   };
 
