@@ -38,7 +38,7 @@ const extractKeywords = (answerList) => {
     
     answerList.forEach(ans => {
         const text = typeof ans === 'string' ? ans : (ans.text || ans.answer || ans.answer_text || '');
-        const words = text.match(/[가-힣]{2,}|[a-zA-Z]{3,}/g) || [];
+        const words = text.match(/\d+|[가-힣]{2,}|[a-zA-Z]{3,}/g) || [];
         
         words.forEach(word => {
             word = word.toLowerCase();
