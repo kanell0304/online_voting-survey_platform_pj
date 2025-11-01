@@ -7,7 +7,7 @@ export default function CreateFormPage({ formData, setFormData }) {
   const navigate = useNavigate();
 
   const saveToServer = async (form)=>{
-    const ok = window.confirm("이후에는 제목, 설명, 마감기한만 수정할 수 있습니다. 폼을 생성하시겠습니까?");
+    const ok = window.confirm("설문 마감일은 생성일로부터 14일입니다. \n'나의 설문'에서 제목, 설명, 마감일만 수정 가능합니다. \n\n이대로 폼을 생성하시겠습니까?");
     if(!ok)return;
 
     const payload={
