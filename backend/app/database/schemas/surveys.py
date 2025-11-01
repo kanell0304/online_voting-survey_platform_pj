@@ -4,8 +4,8 @@ from datetime import datetime
 from backend.app.database.schemas.survey_question import SurveyQuestionCreate, SurveyQuestionOut
 
 class SurveyBase(BaseModel):
-    title:str=Field(..., max_length=40)
-    description:str=Field(..., max_length=100)
+    title:str=Field(..., max_length=80)
+    description:str=Field(..., max_length=400)
     expire_at:Optional[datetime]=None
     is_public:bool=False
 

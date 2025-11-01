@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+
 
 class SurveyOptionBase(BaseModel):
-    option_text:str=Field(...,max_length=500)
+    option_text:str=Field(...,max_length=100)
 
 class SurveyOptionCreate(SurveyOptionBase):
     pass

@@ -143,7 +143,7 @@ export default function SurveyDistributionPage() {
     const [showCopyToast, setShowCopyToast] = useState(false); 
     const [surveyTitle, setSurveyTitle] = useState("설문 제목");
     const [emailSubject, setEmailSubject] = useState('설문 참여 요청'); 
-    const [emailBody, setEmailBody] = useState('안녕하세요. 저희 설문에 참여해 주시면 감사하겠습니다.\n\n[설문 URL 자리]');
+    const [emailBody, setEmailBody] = useState('안녕하세요. 저희 설문에 참여해 주시면 감사하겠습니다.');
     const [isLoading, setIsLoading] = useState(false); 
     const [apiMessage, setApiMessage] = useState({ show: false, text: '', type: 'success' });
 

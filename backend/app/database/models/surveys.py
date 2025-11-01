@@ -1,7 +1,7 @@
 from ..base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime, timedelta
-from sqlalchemy import String, ForeignKey, Boolean, DateTime, func, text
+from datetime import datetime
+from sqlalchemy import ForeignKey, Boolean, DateTime, func, text, Text
 from typing import Optional, List
 
 
@@ -10,8 +10,8 @@ class Surveys(Base):
     __tablename__ = "surveys"
 
     survey_id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
-    title: Mapped[str] = mapped_column(String(40), nullable=False) # 설문지 주제
-    description: Mapped[str] = mapped_column(String(100), nullable=False) # 설문지에 대한 설명
+    title: Mapped[str] = mapped_column(Text, nullable=False) # 설문지 주제
+    description: Mapped[str] = mapped_column(Text, nullable=False) # 설문지에 대한 설명
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False) # 설문지 작성자 user_id
     
 

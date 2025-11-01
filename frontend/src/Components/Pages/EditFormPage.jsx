@@ -50,28 +50,29 @@ export default function EditFormPage(){
   if (loading) return <div className="text-center py-20">Loading...</div>;
 
   return (
-    <div className=" bg-neutral-50 py-8 flex justify-center">
-      <div className="w-full max-w-2xl bg-purple-50 shadow-lg rounded-xl p-8 border border-gray-200 space-y-6">
-        <h1 className="text-4xl font-bold text-amber-800 text-shadow-2xs">정보 수정</h1>
+    <div className=" bg-gray-50 py-8 flex justify-center">
+      <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-8 border border-gray-200 space-y-6">
+        <h1 className="text-3xl font-semibold text-blue-600 text-shadow-2xs">Update Form</h1>
 
         <div className="space-y-4">
           <div>
-            <h3 className="block mb-1 font-semibold">제목</h3>
-            <input type="text" value={formData.title} onChange={(e)=>setFormData({...formData, title: e.target.value})} className="w-full border-b border-gray-400 p-2 outline-none focus:border-blue-500" />
+            <h3 className="block mb-1">제목</h3>
+            <input type="text" value={formData.title} onChange={(e)=>setFormData({...formData, title: e.target.value})} className="w-full border-b border-gray-400 p-2 outline-none text-sm focus:border-blue-500" />
           </div>
 
           <div>
-            <h3 className="block mb-1 font-semibold">설문 설명</h3>
-            <input type='text' value={formData.description} onChange={(e)=>setFormData({...formData, description: e.target.value})} className="w-full border-b border-gray-400 p-2 outline-none focus:border-blue-500" />
+            <h3 className="block mb-1">설명</h3>
+            <input type='text' value={formData.description} onChange={(e)=>setFormData({...formData, description: e.target.value})} className="w-full border-b border-gray-400 p-2 outline-none text-sm focus:border-blue-500" />
           </div>
 
           <div>
-            <h3 className="block mb-1 font-semibold">마감일</h3>
-            <input type="date" value={formData.expire_at} onChange={(e)=>setFormData({...formData, expire_at: e.target.value})} className="w-full border-b border-gray-400 p-2 outline-none focus:border-blue-500"/>
+            <h3 className="block mb-1">마감일</h3>
+            <input type="date" value={formData.expire_at} onChange={(e)=>setFormData({...formData, expire_at: e.target.value})} className="w-full border-b text-sm border-gray-400 p-2 cursor-pointer outline-none focus:border-blue-500"/>
           </div>
         </div>
-
-        <button onClick={handleSave} className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">저장하기</button>
+        <div className='flex justify-end'>
+          <button onClick={handleSave} className="px-4 py-2 bg-blue-600 cursor-pointer text-white rounded-lg shadow hover:bg-blue-700">저장하기</button>
+        </div>
 
       </div>
     </div>
