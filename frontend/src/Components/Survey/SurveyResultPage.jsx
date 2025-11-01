@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom'; 
+import { useParams } from 'react-router-dom'; 
 
 // 백엔드 API 기본 URL
 const API_BASE_URL = "http://localhost:8081/survey_stats";
+
+// 차트 색상 팔레트
+const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 // 날짜 포맷 변환 유틸리티 함수 (ISO 문자열 -> YYYY. MM. DD)
 const formatDate = (isoString) => {
@@ -19,6 +22,35 @@ const formatDate = (isoString) => {
     } catch (e) {
         return '미정';
     }
+};
+
+// 주관식 응답 데이터 추출 유틸리티 함수
+const extractAnswerList = (question) => {
+    let answerList = question.answerList || question.sample_responses || [];
+    if (!Array.isArray(answerList)) answerList = [];
+    return answerList;
+};
+
+// 주관식 응답에서 키워드 추출 함수
+const extractKeywords = (answerList) => {
+    const wordCount = {};
+    const stopWords = ['그리고', '하지만', '그래서', '때문에', '그러나', '그런데', '하는', '있는', '같은', '되는'];
+    
+    answerList.forEach(ans => {
+        const text = typeof ans === 'string' ? ans : (ans.text || ans.answer || ans.answer_text || '');
+        const words = text.match(/[가-힣]{2,}|[a-zA-Z]{3,}/g) || [];
+        
+        words.forEach(word => {
+            word = word.toLowerCase();
+            if (!stopWords.includes(word)) {
+                wordCount[word] = (wordCount[word] || 0) + 1;
+            }
+        });
+    });
+    
+    return Object.entries(wordCount)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
 };
 
 // 초기 데이터 구조
@@ -42,7 +74,6 @@ export default function SurveyResultPage() {
     
     // URL 파라미터에서 설문 ID 추출
     const { formId: survey_id } = useParams(); 
-    const navigate = useNavigate();
 
     // survey_id가 없을 경우 에러 화면 표시
     if (!survey_id) {
@@ -63,7 +94,7 @@ export default function SurveyResultPage() {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('response'); 
     const [activeResponseTab, setActiveResponseTab] = useState('single');
-    const [expandedQuestions, setExpandedQuestions] = useState({}); // 확장된 질문 추적
+    const [expandedQuestions, setExpandedQuestions] = useState({});
 
     // 컴포넌트 마운트 시 설문 결과 데이터 불러오기
     useEffect(() => {
@@ -88,8 +119,6 @@ export default function SurveyResultPage() {
                 
                 if (response.data && response.data.success && response.data.data) {
                     setResultData(response.data.data);
-                    // 데이터 구조 확인을 위한 로그
-                    console.log("주관식 질문 데이터:", response.data.data.short_text_questions);
                 } else {
                     throw new Error("응답 데이터 구조가 올바르지 않습니다.");
                 }
@@ -391,6 +420,7 @@ export default function SurveyResultPage() {
                                             short_text_questions.map((question, index) => {
                                                 const questionId = `text-${question.question_id || index}`;
                                                 const isExpanded = expandedQuestions[questionId];
+                                                const answerList = extractAnswerList(question);
                                                 
                                                 return (
                                                     <div 
@@ -422,67 +452,27 @@ export default function SurveyResultPage() {
                                                         {/* 확장된 주관식 응답 리스트 */}
                                                         {isExpanded && (
                                                             <div className="px-4 pb-4 pt-2 border-t border-gray-200 bg-white max-h-96 overflow-y-auto">
-                                                                {(() => {
-                                                                    // 데이터 구조에 맞춰 응답 리스트 추출
-                                                                    let answerList = [];
-                                                                    
-                                                                    // answerList 필드 확인 (백엔드에서 제공하는 실제 필드명)
-                                                                    if (question.answerList && Array.isArray(question.answerList) && question.answerList.length > 0) {
-                                                                        answerList = question.answerList;
-                                                                    } 
-                                                                    // sample_responses가 있으면 표시
-                                                                    else if (question.sample_responses && Array.isArray(question.sample_responses) && question.sample_responses.length > 0) {
-                                                                        answerList = question.sample_responses;
-                                                                    }
-                                                                    // 다른 가능한 필드명들
-                                                                    else if (question.responses && Array.isArray(question.responses)) {
-                                                                        answerList = question.responses;
-                                                                    } else if (question.answers && Array.isArray(question.answers)) {
-                                                                        answerList = question.answers;
-                                                                    } else if (question.text_responses && Array.isArray(question.text_responses)) {
-                                                                        answerList = question.text_responses;
-                                                                    }
-                                                                    
-                                                                    if (answerList.length > 0) {
-                                                                        return (
-                                                                            <div className="space-y-2">
-                                                                                {answerList.map((resp, respIdx) => {
-                                                                                    // 다양한 형태의 응답 처리
-                                                                                    let answerText = '';
-                                                                                    
-                                                                                    if (typeof resp === 'string') {
-                                                                                        answerText = resp;
-                                                                                    } else if (resp.text) {
-                                                                                        answerText = resp.text;
-                                                                                    } else if (resp.answer) {
-                                                                                        answerText = resp.answer;
-                                                                                    } else if (resp.answer_text) {
-                                                                                        answerText = resp.answer_text;
-                                                                                    } else if (resp.response) {
-                                                                                        answerText = resp.response;
-                                                                                    } else {
-                                                                                        answerText = JSON.stringify(resp);
-                                                                                    }
-                                                                                    
-                                                                                    return (
-                                                                                        <div key={respIdx} className="py-2 border-b border-gray-100 last:border-0">
-                                                                                            <span className="text-xs text-gray-400 mr-2">{respIdx + 1}.</span>
-                                                                                            <span className="text-sm text-gray-700">
-                                                                                                {answerText}
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    );
-                                                                                })}
-                                                                            </div>
-                                                                        );
-                                                                    } else {
-                                                                        return (
-                                                                            <div className="text-sm text-gray-400 py-2">
-                                                                                <p>아직 제출된 응답이 없습니다.</p>
-                                                                            </div>
-                                                                        );
-                                                                    }
-                                                                })()}
+                                                                {answerList.length > 0 ? (
+                                                                    <div className="space-y-2">
+                                                                        {answerList.map((resp, respIdx) => {
+                                                                            const answerText = typeof resp === 'string' ? resp : 
+                                                                                (resp.text || resp.answer || resp.answer_text || JSON.stringify(resp));
+                                                                            
+                                                                            return (
+                                                                                <div key={respIdx} className="py-2 border-b border-gray-100 last:border-0">
+                                                                                    <span className="text-xs text-gray-400 mr-2">{respIdx + 1}.</span>
+                                                                                    <span className="text-sm text-gray-700">
+                                                                                        {answerText}
+                                                                                    </span>
+                                                                                </div>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="text-sm text-gray-400 py-2">
+                                                                        <p>아직 제출된 응답이 없습니다.</p>
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         )}
                                                     </div>
@@ -497,14 +487,201 @@ export default function SurveyResultPage() {
                                 </div>
                             </div>
                         ) : (
-                            // 통계 탭 콘텐츠 (향후 구현 예정)
+                            // 통계 탭 콘텐츠
                             <div className="p-6 bg-white border rounded-xl shadow-lg">
                                 <h3 className="text-xl font-semibold border-b pb-3 mb-5 text-gray-700">
                                     설문 통계 분석
                                 </h3>
-                                <div className="h-64 flex items-center justify-center text-gray-500 border border-dashed rounded-xl">
-                                    <p className="text-lg">통계 차트 기능 개발 예정</p>
+                                
+                                {/* 전체 응답률 - 원형 차트 */}
+                                <div className="mb-8">
+                                    <h4 className="text-lg font-semibold text-gray-800 mb-4">전체 응답률</h4>
+                                    <div className="flex items-center justify-center gap-8">
+                                        {/* 도넛 차트 */}
+                                        <div className="relative w-48 h-48">
+                                            <svg viewBox="0 0 100 100" className="transform -rotate-90">
+                                                <circle
+                                                    cx="50"
+                                                    cy="50"
+                                                    r="40"
+                                                    fill="none"
+                                                    stroke="#e5e7eb"
+                                                    strokeWidth="20"
+                                                />
+                                                <circle
+                                                    cx="50"
+                                                    cy="50"
+                                                    r="40"
+                                                    fill="none"
+                                                    stroke="#10b981"
+                                                    strokeWidth="20"
+                                                    strokeDasharray={`${(parseFloat(completion_rate) || 0) * 2.51} 251`}
+                                                    strokeLinecap="round"
+                                                />
+                                            </svg>
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                                <span className="text-3xl font-bold text-green-600">{completion_rate}%</span>
+                                                <span className="text-sm text-gray-500">완료율</span>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* 범례 */}
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-4 h-4 bg-green-500 rounded"></div>
+                                                <span className="text-sm text-gray-700">완료: {response_count}명</span>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-4 h-4 bg-gray-300 rounded"></div>
+                                                <span className="text-sm text-gray-700">미완료: {parseInt(distributed_count) - parseInt(response_count)}명</span>
+                                            </div>
+                                            <div className="flex items-center gap-3 pt-2 border-t border-gray-200">
+                                                <span className="text-sm font-semibold text-gray-900">총 대상: {distributed_count}명</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                {/* 객관식 질문별 통계 */}
+                                {single_choice_questions.length > 0 && (
+                                    <div className="space-y-8">
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-4 border-t pt-6">객관식 질문별 응답 분포</h4>
+                                        {single_choice_questions.map((question, index) => {
+                                            const maxCount = question.options?.reduce((max, opt) => 
+                                                Math.max(max, opt.count || 0), 0) || 1;
+
+                                            if (!question.options || question.options.length === 0) return null;
+
+                                            return (
+                                                <div key={question.question_id || index} className="border rounded-lg p-5 bg-gray-50">
+                                                    <h5 className="text-md font-semibold text-gray-700 mb-4">
+                                                        Q{index + 1}. {question.question_text}
+                                                    </h5>
+                                                    
+                                                    {/* CSS 바 차트 */}
+                                                    <div className="space-y-3">
+                                                        {question.options.map((option, optIdx) => {
+                                                            const percentage = (option.count / maxCount) * 100;
+                                                            const color = CHART_COLORS[optIdx % CHART_COLORS.length];
+                                                            
+                                                            return (
+                                                                <div key={optIdx} className="space-y-1">
+                                                                    <div className="flex justify-between items-center text-sm">
+                                                                        <span className="text-gray-700 font-medium">
+                                                                            {option.text || option.option_text || `옵션 ${optIdx + 1}`}
+                                                                        </span>
+                                                                        <span className="text-gray-600">
+                                                                            {option.count || 0}명 ({option.percentage || 0}%)
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className="w-full bg-gray-200 rounded-full h-6 overflow-hidden">
+                                                                        <div 
+                                                                            className="h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2"
+                                                                            style={{ 
+                                                                                width: `${percentage}%`,
+                                                                                backgroundColor: color
+                                                                            }}
+                                                                        >
+                                                                            {percentage > 10 && (
+                                                                                <span className="text-xs font-semibold text-white">
+                                                                                    {option.percentage || 0}%
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+
+                                                    {/* 총 응답 수 표시 */}
+                                                    <div className="mt-4 pt-3 border-t border-gray-300 text-sm text-gray-600">
+                                                        총 응답 수: <span className="font-bold text-gray-900">{question.total_responses || response_count}명</span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {/* 주관식 통계 */}
+                                {short_text_questions.length > 0 && (
+                                    <div className="mt-8 border-t pt-6">
+                                        <h4 className="text-lg font-semibold text-gray-800 mb-4">주관식 질문 통계</h4>
+                                        <div className="space-y-6">
+                                            {short_text_questions.map((question, index) => {
+                                                const answerList = extractAnswerList(question);
+                                                const topKeywords = extractKeywords(answerList);
+                                                const maxKeywordCount = topKeywords.length > 0 ? topKeywords[0][1] : 1;
+                                                
+                                                return (
+                                                    <div key={question.question_id || index} className="border rounded-lg p-5 bg-gray-50">
+                                                        <h5 className="text-md font-semibold text-gray-700 mb-4">
+                                                            Q{index + 1}. {question.question_text}
+                                                        </h5>
+                                                        
+                                                        {/* 기본 통계 */}
+                                                        <div className="bg-white p-4 rounded-lg border border-blue-200 mb-6">
+                                                            <p className="text-sm text-gray-600 mb-1">총 응답 수</p>
+                                                            <p className="text-3xl font-bold text-blue-600">{answerList.length}개</p>
+                                                        </div>
+                                                        
+                                                        {answerList.length > 0 ? (
+                                                            <>
+                                                                {/* 키워드 빈도 */}
+                                                                {topKeywords.length > 0 ? (
+                                                                    <div>
+                                                                        <h6 className="text-sm font-semibold text-gray-700 mb-3">자주 등장한 키워드 TOP 5</h6>
+                                                                        <div className="space-y-2">
+                                                                            {topKeywords.map(([word, count], idx) => {
+                                                                                const percentage = (count / maxKeywordCount) * 100;
+                                                                                
+                                                                                return (
+                                                                                    <div key={idx} className="flex items-center gap-3">
+                                                                                        <span className="text-sm font-medium text-gray-700 w-8">{idx + 1}.</span>
+                                                                                        <span className="text-sm text-gray-700 w-24 truncate">{word}</span>
+                                                                                        <div className="flex-1 bg-gray-200 rounded-full h-6 overflow-hidden">
+                                                                                            <div 
+                                                                                                className="h-full rounded-full transition-all duration-500 flex items-center justify-center"
+                                                                                                style={{ 
+                                                                                                    width: `${percentage}%`,
+                                                                                                    backgroundColor: CHART_COLORS[idx]
+                                                                                                }}
+                                                                                            >
+                                                                                                <span className="text-xs font-semibold text-white">
+                                                                                                    {count}회
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="text-center py-6 text-gray-400">
+                                                                        <p>분석 가능한 키워드가 없습니다.</p>
+                                                                    </div>
+                                                                )}
+                                                            </>
+                                                        ) : (
+                                                            <div className="text-center py-8 text-gray-400">
+                                                                <p>아직 제출된 응답이 없습니다.</p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* 데이터가 없을 경우 */}
+                                {single_choice_questions.length === 0 && short_text_questions.length === 0 && (
+                                    <div className="h-40 flex items-center justify-center text-gray-400 border border-dashed rounded-xl">
+                                        <p className="text-lg">아직 통계를 표시할 데이터가 없습니다.</p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

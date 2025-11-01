@@ -99,7 +99,7 @@ class EmailService:
         success_emails = [] # 발송 성공한 이메일 정보 저장
         failed_emails = [] # 발송 실패한 이메일 정보 저장
         
-        survey_link = f"{self.frontend_url}/surveys/{survey_id}" # 설문지 링크: http://localhost:3000/survey/{survey_id}
+        survey_link = f"{self.frontend_url}/surveys/{survey_id}" # 설문지 링크: http://localhost:5173/survey/{survey_id}
         
         # 각 이메일을 순차적으로 발송 (Gmail 제한 고려)
         for log in email_logs:
