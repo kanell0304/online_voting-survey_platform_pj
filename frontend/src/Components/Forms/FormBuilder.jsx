@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import Template from './Template';
 
 export default function FormBuilder({ formData, setFormData, onSave }) {
   const navigate = useNavigate();
@@ -47,7 +47,10 @@ export default function FormBuilder({ formData, setFormData, onSave }) {
         {/* 상단 제목 + 미리보기 버튼 */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-semibold text-blue-600 text-shadow-2xs">Create Form</h1>
-          <button onClick={()=>navigate("/preview")} className="hover:bg-blue-50 px-3 text-sm py-2 rounded-lg">미리보기</button>
+          <div className="flex space-x-2">
+            <button onClick={()=>navigate("/templates")} className="hover:bg-blue-50 px-3 text-sm py-2 rounded-lg">템플릿</button>
+            <button onClick={()=>navigate("/preview")} className="hover:bg-blue-50 px-3 text-sm py-2 rounded-lg">미리보기</button>
+          </div>
         </div>
 
         {/* 폼 제목 입력 */}
