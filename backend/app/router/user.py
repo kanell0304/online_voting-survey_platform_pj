@@ -1,10 +1,11 @@
 # backend/app/router/user.py
 from typing import List
-from fastapi import APIRouter, Depends, Response, Request, HTTPException
+from fastapi import APIRouter, Depends, Response, Request, HTTPException, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..database.crud.user import UserCrud
-from ..database.schemas.user import (UserCreate, UserUpdate, UserLogin, UserRead, UserReadWithRoles)
+from ..database.schemas.user import (UserCreate, UserUpdate, UserLogin, UserRead, UserReadWithRoles,
+                                     UserReadWithProfile)
 from ..service.user import UserService
 from ..database.database import get_db
 from ..core.auth import set_auth_cookies, get_user_id
@@ -40,6 +41,25 @@ async def logout(response: Response, request: Request, db: AsyncSession = Depend
 @router.get("/userme", response_model=UserReadWithRoles, summary="내 정보 조회")
 async def get_me(user_id: int = Depends(get_user_id), db: AsyncSession = Depends(get_db)):
     return await UserService.get_user_with_user_roles(db, user_id)
+
+
+# 프로필 이미지 업로드
+@router.post("/profile-image", response_model=UserRead)
+async def upload_profile_image(file: UploadFile = File(...), db: AsyncSession = Depends(get_db), user_id: int = Depends(get_user_id)):
+    user = await UserService.update_profile_image(file, db, user_id)
+    return user
+
+# 프로필 정보 조회 (이미지 URL 포함)
+@router.get("/profile", response_model=UserReadWithProfile)
+async def get_user_profile(db: AsyncSession = Depends(get_db), user_id: int = Depends(get_user_id)):
+    return await UserService.get_user_with_profile(db, user_id)
+
+# 프로필 이미지 삭제
+@router.delete("/profile-image", response_model=UserRead)
+async def delete_profile_image(db: AsyncSession = Depends(get_db), user_id: int = Depends(get_user_id)):
+    user = await UserService.delete_profile_image(db, user_id)
+    return user
+
 
 # --------------------------
 # 사용자 목록 / 단건 조회 / 수정 / 삭제

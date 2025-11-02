@@ -1,7 +1,7 @@
 from ..base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
-from sqlalchemy import String, func, DateTime
+from sqlalchemy import String, func, DateTime, Integer, ForeignKey
 from typing import Optional, List
 
 # 사용자 테이블
@@ -13,6 +13,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(100), unique=True, nullable=False) # 이메일(아이디)
     password: Mapped[str] = mapped_column(String(300), nullable=False) # 비밀번호
     phone_number: Mapped[str] = mapped_column(String(20), nullable=False) # 전화번호
+    profile_image_id: Mapped[Optional[int]] = mapped_column(Integer,ForeignKey("images.id", ondelete="SET NULL"),nullable=True) # 유저 프로필 이미지
     refresh_token:Mapped[Optional[str]] = mapped_column(String(300), nullable=True) # 리프레쉬 토큰 정보
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), nullable=False) # 생성일(회원가입일)
     # 비밀번호 재설정을 위한 필드를 추가했습니다 - 이경준
@@ -22,6 +23,7 @@ class User(Base):
     #1:M관계
     surveys:Mapped[List["Surveys"]]=relationship("Surveys", back_populates="user", cascade="all, delete-orphan")
     responses:Mapped[List["Response"]]=relationship("Response", cascade="all, delete-orphan")
+    profile_image: Mapped[Optional["Image"]] = relationship("Image", foreign_keys=[profile_image_id])
 
     # M:M 관계 - 이경준
     roles: Mapped[List["Roles"]] = relationship("Roles", secondary="user_roles", back_populates="users")

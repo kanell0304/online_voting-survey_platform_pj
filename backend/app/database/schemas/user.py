@@ -32,13 +32,16 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
 
 
+class UserProfileImageUpdate(BaseModel):
+    pass
+
+
 # DB에서 가져오는 내부용 모델
 class UserInDB(UserBase):
     model_config = ConfigDict(from_attributes=True)  # SQLAlchemy 객체 → Pydantic 변환 허용
 
     user_id: int
-    # 내부적으로 비밀번호 해시를 다루고 싶다면 여기에 포함 가능(응답 모델과 구분!)
-    # password: str
+    profile_image_id: Optional[int] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class RoleRead(BaseModel):
@@ -53,7 +56,29 @@ class UserRead(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     user_id: int
+    profile_image_id: Optional[int] = None
     created_at: datetime
+
+
+class UserReadWithProfile(UserRead):
+    profile_image_url: Optional[str] = None
+
+    @classmethod
+    def from_user(cls, user, base_url: str = ""):
+        profile_url = None
+        if user.profile_image_id:
+            profile_url = f"{base_url}/image/raw/{user.profile_image_id}"
+
+        return cls(
+            email=user.email,
+            username=user.username,
+            phone_number=user.phone_number,
+            user_id=user.user_id,
+            profile_image_id=user.profile_image_id,
+            created_at=user.created_at,
+            profile_image_url=profile_url
+        )
+
 
 class UserReadWithRoles(UserRead):
     roles: List[RoleRead] = []
@@ -68,3 +93,7 @@ class ResetPasswordWithCode(BaseModel):
     email: str
     reset_code: str = Field(..., min_length=6, max_length=6)
     new_password: str
+
+
+class UserReadWithRolesAndProfile(UserReadWithProfile):
+    roles: List[RoleRead] = []

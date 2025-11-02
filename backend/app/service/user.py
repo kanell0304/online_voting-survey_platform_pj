@@ -2,15 +2,19 @@
 from pydoc import describe
 from typing import Tuple, List
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile, Depends
 from sqlalchemy import select
+
+from .image_service import ImageService
+from ..core.auth import get_user_id
 from ..database.models import Roles, UserRoles
 from ..database.models.roles import RoleEnum
-from ..database.schemas.user import UserCreate, UserLogin, UserUpdate, UserRead
+from ..database.schemas.user import UserCreate, UserLogin, UserUpdate, UserRead, UserReadWithProfile
 from ..database.crud.user import UserCrud
 from ..database.models import User
 from ..core.jwt_context import (get_pwd_hash, verify_pwd, create_access_token, create_refresh_token)
 from ..service.email_service import email_service
+from ..database.models import Image
 
 class UserService:
     """User 도메인 서비스 (CRUD + 인증 토큰 발급)"""
@@ -145,15 +149,16 @@ class UserService:
     async def reset_password_with_code(db: AsyncSession, email: str, reset_code: str, new_password: str):
         # 인증코드 검증
         user = await UserCrud.verify_reset_code(db, email, reset_code)
+
         if not user:
             raise HTTPException(status_code=400, detail="인증코드가 유효하지 않거나 만료되었습니다.")
 
         try:
-            # 2. 비밀번호 해시화 및 업데이트
+            # 비밀번호 해시화 및 업데이트
             hashed_password = await get_pwd_hash(new_password)
             await UserCrud.update_by_id(db, user.user_id, {"password": hashed_password})
 
-            # 3. 인증코드 초기화
+            # 인증코드 초기화
             await UserCrud.clear_reset_code(db, user.user_id)
 
             await db.commit()
@@ -162,7 +167,66 @@ class UserService:
 
         except Exception as e:
             await db.rollback()
-            raise HTTPException(
-                status_code=500,
-                detail="비밀번호 변경 중 오류가 발생했습니다."
-            )
+            raise HTTPException(status_code=500, detail="비밀번호 변경 중 오류가 발생했습니다.")
+
+    @staticmethod
+    async def update_profile_image(file: UploadFile, db: AsyncSession, user_id: int):
+        result = await db.execute(select(User).filter(User.user_id == user_id))
+        user = result.scalar_one_or_none()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # 기존 프로필 이미지 삭제
+        if user.profile_image_id:
+            old_image_result = await db.execute(select(Image).filter(Image.id == user.profile_image_id))
+            old_image = old_image_result.scalar_one_or_none()
+
+            if old_image:
+                await db.delete(old_image)
+
+        # 새 이미지 업로드
+        db_image = await ImageService.image_upload(file, db)
+
+        # 유저에 이미지 연결
+        user.profile_image_id = db_image.id
+        await db.commit()
+        await db.refresh(user)
+
+        return user
+
+    @staticmethod
+    async def get_user_with_profile(db: AsyncSession, user_id: int) -> UserReadWithProfile:
+        result = await db.execute(select(User).filter(User.user_id == user_id))
+        user = result.scalar_one_or_none()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # UserReadWithProfile로 변환
+        return UserReadWithProfile.from_user(user)
+
+    @staticmethod
+    async def delete_profile_image(db: AsyncSession, user_id: int):
+        result = await db.execute(select(User).filter(User.user_id == user_id))
+        user = result.scalar_one_or_none()
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        if not user.profile_image_id:
+            raise HTTPException(status_code=404, detail="No profile image found")
+
+        # 이미지 삭제
+        image_result = await db.execute(select(Image).filter(Image.id == user.profile_image_id))
+        image = image_result.scalar_one_or_none()
+
+        if image:
+            await db.delete(image)
+
+        user.profile_image_id = None
+
+        await db.commit()
+        await db.refresh(user)
+
+        return user
