@@ -120,9 +120,11 @@ useEffect(()=>{
                 <button onClick={() => handleResultClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">
                   결과
                 </button>
-                <button onClick={() => handlePostClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">
-                  배포
-                </button>
+
+                {dDay > 0 && (
+                  <button onClick={() => handlePostClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">배포</button>
+                )}
+                
                 <button onClick={() => handleEditClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">
                   수정
                 </button>
