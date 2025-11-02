@@ -71,16 +71,17 @@ useEffect(()=>{
   const [sortType, setSortType] = useState("created_at");
 
   const toggle =()=>{
-    setSortType(p=>(p == "created_at" ? "title" : "created_at"));
+    setSortType(prev => {
+      if(prev === "created_at") return "title";
+      else if(prev === "title") return "expire_at";
+      return "created_at";
+    });
   };
 
   const sortedSurveys = [...mySurveys].sort((a, b)=>{
-    if(sortType == "title"){
-      return a.title.localeCompare(b.title, 'ko');
-    }
-    else{
-      return new Date(a.created_at) - new Date(b.created_at);
-    }
+    if(sortType == "title") return a.title.localeCompare(b.title, 'ko');
+    else if(sortType === "expire_at") return new Date(a.expire_at) - new Date(b.expire_at);
+    return new Date(a.created_at) - new Date(b.created_at);
   });
 
 
@@ -91,7 +92,7 @@ useEffect(()=>{
           <h1 className="text-3xl font-bold">My Surveys</h1>
           <p className="text-gray-600">지금까지 만든 설문 목록입니다.</p>
           {/* css toggle 부분 도와주세요ㅠㅠㅠ */}
-          <button onClick={toggle} className='text-gray-600'>{sortType === "created_at" ? "정렬: 생성일순" : "정렬: 가나다순"}</button>
+          <button onClick={toggle} className='text-gray-600'>{(sortType === "created_at") ? "정렬: 생성일순" : (sortType === "title") ? "정렬: 가나다순" : "정렬: 마감일순"}</button>
           <button onClick={handleCreateClick} className="px-3 py-1 ml-184 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">설문지 작성하기</button>
         </div>
 
