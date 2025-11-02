@@ -18,9 +18,9 @@ export default function MainPage() {
 
   return (
     <div className="flex items-center justify-center m-30 bg-neutral-50">
-      <div className="p-20 text-center bg-white border rounded-lg shadow-md">
+      <div className="p-20 text-center font-normal bg-white border border-blue-200 rounded-lg shadow-md">
         <h1 className="text-4xl font-bold text-blue-900 mb-3">All the forms, for mz</h1>
-        <p className="text-gray-500 mb-10">쉽고 빠르게 만들고, 공유하고, 관리하세요. FORMZ는 당신을 위해 만들어졌습니다</p>
+        <p className="text-gray-500 pt-2 mb-10">쉽고 빠르게 만들고, 공유하고, 관리하세요. <br />FORMZ는 당신을 위해 만들어졌습니다.</p>
         <button onClick={()=>CreateSurvey()}className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">시작하기</button>
       </div>
     </div>

@@ -89,11 +89,24 @@ useEffect(()=>{
     <div className="min-h-screen bg-neutral-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">My Surveys</h1>
-          <p className="text-gray-600">지금까지 만든 설문 목록입니다.</p>
-          {/* css toggle 부분 도와주세요ㅠㅠㅠ */}
-          <button onClick={toggle} className='text-gray-600'>{(sortType === "created_at") ? "정렬: 생성일순" : (sortType === "title") ? "정렬: 가나다순" : "정렬: 마감일순"}</button>
-          <button onClick={handleCreateClick} className="px-3 py-1 ml-184 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">설문지 작성하기</button>
+          <h1 className="text-3xl font-bold pb-2">My Surveys</h1>
+          <p className="text-gray-600 pb-1">지금까지 만든 설문 목록입니다.</p>
+          <br/>
+
+          {/* toggle */}
+          <div className='w-full flex justify-end'>
+          <div className="inline-flex border border-gray-300 rounded-full overflow-hidden text-[11px]">
+            <button className={`px-4 py-2 transition-colors duration-200 ${sortType==="created_at" ? "bg-blue-500 text-white"
+            :"bg-white text-gray-700 hover:bg-gray-100"} rounded-l-full`} onClick={() => setSortType("created_at")}>생성일순</button>
+
+            <button className={`px-4 py-2 transition-colors duration-200 ${sortType === "title" ? "bg-blue-500 text-white"
+            :"bg-white text-gray-700 hover:bg-gray-100"}`} onClick={() => setSortType("title")}>가나다순</button>
+
+            <button className={`px-4 py-2 transition-colors duration-200 ${sortType === "expire_at" ? "bg-blue-500 text-white"
+            :"bg-white text-gray-700 hover:bg-gray-100"} rounded-r-full`} onClick={() => setSortType("expire_at")}>마감일순</button>
+          </div>
+          </div>
+        
         </div>
 
         {/* 설문 목록을 그리드 형태로 표시 */}
@@ -107,17 +120,17 @@ useEffect(()=>{
             const dDay = Math.ceil((new Date(survey.expire_at) - new Date()) / 86400000)
 
             return (
-            <div key={survey.survey_id} className={`p-4 bg-white border rounded-lg shadow ${expireDate?'border-red-600' : 'border'}`}>
+            <div key={survey.survey_id} className={`p-4 bg-white border rounded-lg shadow ${expireDate?'border-rose-600 text-gray-300' : 'border border-blue-200'}`}>
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold mb-2">{survey.title}</h3>
                 <button onClick={() => handleDeleteClick(survey.survey_id)} className="px-3 py-1 rounded-md hover:bg-gray-300"><MdOutlineDeleteForever /></button>
               </div>
               <div className="text-sm mb-4">
-                <span className="text-gray-500">생성일: {survey.created_at.split('T')[0]}</span><br/>
-                <span className={expireDate ? 'text-red-400' : 'text-gray-500'}>마감일: {survey.expire_at.split('T')[0]} {dDay>0 ? `(D-${dDay})`:'(마감)'}</span>
+                <span className={expireDate ? 'text-slate-300' : 'text-gray-500'}>생성일: {survey.created_at.split('T')[0]}</span><br/>
+                <span className={expireDate ? 'text-rose-400' : 'text-gray-500'}>마감일: {survey.expire_at.split('T')[0]} {dDay>0 ? `(D-${dDay})`:'(마감)'}</span>
               </div>
               <div className="flex justify-end space-x-2">
-                <button onClick={() => handleResultClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">
+                <button onClick={() => handleResultClick(survey.survey_id)} className={expireDate ? 'px-3 py-1 text-sm text-white bg-gray-400 rounded-md hover:bg-gray-500' : "px-3 py-1 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700"}>
                   결과
                 </button>
 
@@ -125,7 +138,7 @@ useEffect(()=>{
                   <button onClick={() => handlePostClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">배포</button>
                 )}
                 
-                <button onClick={() => handleEditClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600">
+                <button onClick={() => handleEditClick(survey.survey_id)} className={expireDate ? 'px-3 py-1 text-sm text-white bg-blue-400 rounded-md hover:bg-blue-500' : "px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600"}>
                   수정
                 </button>
               </div>
