@@ -14,6 +14,7 @@ import ResponsePage from './Components/Pages/ResponsePage.jsx';
 import SurveyDistributionPage from './Components/Survey/SurveyDistributionPage.jsx';
 import SurveyResultPage from './Components/Survey/SurveyResultPage.jsx';
 import Template from './Components/Forms/Template.jsx';
+import Profile from './Components/Pages/Profile.jsx';
 
 export default function App() {
   const [formData, setFormData] = useState({ title: "", description: "", questions: [] }); //생성 <-> 미리보기 데이터 연결용
@@ -23,6 +24,7 @@ export default function App() {
       <Routes>
         {/* 메인페이지 */}
         <Route path="/" element={<MainLayout><MainPage /></MainLayout>} />
+        <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
 
         {/* 로그인 관련 */}
         <Route path="/signup" element={<SignupPage />} />

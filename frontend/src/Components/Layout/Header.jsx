@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../../assets/logo.jpg'
+import defaultProfile from '../../assets/defaultProfile.png';
 
 export default function Header() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const [profileImage, setProfileImage] = useState(defaultProfile); //현재 이미지 고정값으로 들어감 -> useeffect에 이미지가 존재하면 변경되게 코드 수정 필요
 
   //로그인 여부 확인, 유저네임 가져오기
   useEffect(()=>{
@@ -53,8 +55,9 @@ export default function Header() {
 
           <nav className="flex items-center space-x-4">
             {isLoggedIn ? (
-              <div>
-                <span className="font-bold px-3 py-2 text-sm">{username}님</span>
+              <div className='flex items-center'>
+                <img src={profileImage} alt="프로필" className="w-5 h-5 rounded-full border object-cover cursor-pointer" onClick={()=>navigate('/profile')}/>
+                <span className=" font-bold px-3 py-2 text-sm">{username}님</span>
                 <Link to="/my-surveys" className="hover:text-blue-600 font-medium px-3 py-2 text-sm">나의 설문</Link>
                 <button onClick={handleLogout} className="px-3 py-2 text-sm font-medium hover:text-blue-600 cursor-pointer">로그아웃</button>
               </div>
