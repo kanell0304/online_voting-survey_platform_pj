@@ -30,6 +30,7 @@ export default function CreateFormPage({ formData, setFormData }) {
       ); //쿠키로 오기때문에 withCredentials
       setFormData({title: "", questions: []})
       alert("성공적으로 저장되었습니다!");
+      setFormData({ title: "", description: "", questions: [] });
       if(window.confirm("공유 하시겠습니까?")){
         navigate(`/distribute/${res.data.survey_id}`); //배포페이지
         return;
