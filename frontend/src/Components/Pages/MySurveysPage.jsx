@@ -104,14 +104,18 @@ useEffect(()=>{
           sortedSurveys.map(survey => {
             const days = 3
             const expireDate = (new Date(survey.expire_at) - new Date()) <= days * 86400000 //시,분,초,밀리초 곱한값
-            
+            const dDay = Math.ceil((new Date(survey.expire_at) - new Date()) / 86400000)
+
             return (
             <div key={survey.survey_id} className={`p-4 bg-white border rounded-lg shadow ${expireDate?'border-red-600' : 'border'}`}>
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold mb-2">{survey.title}</h3>
                 <button onClick={() => handleDeleteClick(survey.survey_id)} className="px-3 py-1 rounded-md hover:bg-gray-300"><MdOutlineDeleteForever /></button>
               </div>
-              <p className="text-sm text-gray-500 mb-4">생성일: {survey.created_at.split('T')[0]}</p>
+              <div className="text-sm mb-4">
+                <span className="text-gray-500">생성일: {survey.created_at.split('T')[0]}</span><br/>
+                <span className={expireDate ? 'text-red-400' : 'text-gray-500'}>마감일: {survey.expire_at.split('T')[0]} {dDay>0 ? `(D-${dDay})`:'(마감)'}</span>
+              </div>
               <div className="flex justify-end space-x-2">
                 <button onClick={() => handleResultClick(survey.survey_id)} className="px-3 py-1 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">
                   결과
