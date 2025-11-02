@@ -68,21 +68,39 @@ useEffect(()=>{
     setIsDeleteModal(false);
   }
 
+  const [sortType, setSortType] = useState("created_at");
+
+  const toggle =()=>{
+    setSortType(p=>(p == "created_at" ? "title" : "created_at"));
+  };
+
+  const sortedSurveys = [...mySurveys].sort((a, b)=>{
+    if(sortType == "title"){
+      return a.title.localeCompare(b.title, 'ko');
+    }
+    else{
+      return new Date(a.created_at) - new Date(b.created_at);
+    }
+  });
+
+
   return (
     <div className="min-h-screen bg-neutral-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold">My Surveys</h1>
           <p className="text-gray-600">지금까지 만든 설문 목록입니다.</p>
+          {/* css toggle 부분 도와주세요ㅠㅠㅠ */}
+          <button onClick={toggle} className='text-gray-600'>{sortType === "created_at" ? "정렬: 생성일순" : "정렬: 가나다순"}</button>
           <button onClick={handleCreateClick} className="px-3 py-1 ml-184 text-sm text-white bg-gray-600 rounded-md hover:bg-gray-700">설문지 작성하기</button>
         </div>
 
         {/* 설문 목록을 그리드 형태로 표시 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mySurveys.length === 0 ? (
+          {sortedSurveys.length === 0 ? (
             <p className="text-gray-500 col-span-full text-center py-8">아직 작성된 설문지가 없습니다.</p>
             ):(
-          mySurveys.map(survey => {
+          sortedSurveys.map(survey => {
             return (
             <div key={survey.survey_id} className="p-4 bg-white border rounded-lg shadow">
               <div className="flex justify-between items-center">
