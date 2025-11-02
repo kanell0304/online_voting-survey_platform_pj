@@ -88,28 +88,30 @@ useEffect(()=>{
   return (
     <div className="min-h-screen bg-neutral-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="mb-8">
+        <div className="mb-3">
           <h1 className="text-3xl font-bold pb-2">My Surveys</h1>
-          <p className="text-gray-600 pb-1">지금까지 만든 설문 목록입니다.</p>
-          <br/>
+          <p className="text-gray-600 pb-1 mb-6">지금까지 만든 설문 목록입니다</p>
 
-          {/* toggle */}
-          <div className='w-full flex justify-end'>
-          <div className="inline-flex border border-gray-300 rounded-full overflow-hidden text-[11px]">
-            <button className={`px-4 py-2 transition-colors duration-200 ${sortType==="created_at" ? "bg-blue-500 text-white"
-            :"bg-white text-gray-700 hover:bg-gray-100"} rounded-l-full`} onClick={() => setSortType("created_at")}>생성일순</button>
+            {/* 폼만들기, toggle */}
+          <div className="w-full flex justify-between items-center mb-4">
+            <button onClick={handleCreateClick} className="px-4 py-1.5 text-sm font-medium text-blue-600 bg-blue-100 border border-blue-200 rounded-full hover:bg-blue-200 hover:text-blue-700 active:scale-95 transition-all duration-200">폼 만들기</button>
 
-            <button className={`px-4 py-2 transition-colors duration-200 ${sortType === "title" ? "bg-blue-500 text-white"
-            :"bg-white text-gray-700 hover:bg-gray-100"}`} onClick={() => setSortType("title")}>가나다순</button>
+            <div className="inline-flex border border-gray-300 rounded-full overflow-hidden text-[11px]">
+              <button className={`px-4 py-2 transition-colors duration-200 ${sortType==="created_at" ? "bg-blue-500 text-white"
+              :"bg-white text-gray-700 hover:bg-gray-100"} rounded-l-full`} onClick={() => setSortType("created_at")}>생성일순</button>
 
-            <button className={`px-4 py-2 transition-colors duration-200 ${sortType === "expire_at" ? "bg-blue-500 text-white"
-            :"bg-white text-gray-700 hover:bg-gray-100"} rounded-r-full`} onClick={() => setSortType("expire_at")}>마감일순</button>
+              <div className="border-l border-dashed border-gray-300"></div> {/* 점선(구분선) */}
+              <button className={`px-4 py-2 transition-colors duration-200 ${sortType === "title" ? "bg-blue-500 text-white"
+              :"bg-white text-gray-700 hover:bg-gray-100"}`} onClick={() => setSortType("title")}>가나다순</button>
+              
+              <div className="border-l border-dashed border-gray-300"></div> {/* 점선(구분선) */}
+              <button className={`px-4 py-2 transition-colors duration-200 ${sortType === "expire_at" ? "bg-blue-500 text-white"
+              :"bg-white text-gray-700 hover:bg-gray-100"} rounded-r-full`} onClick={() => setSortType("expire_at")}>마감일순</button>
+            </div>
           </div>
-          </div>
-        
         </div>
 
-        {/* 설문 목록을 그리드 형태로 표시 */}
+        {/* 설문 목록 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedSurveys.length === 0 ? (
             <p className="text-gray-500 col-span-full text-center py-8">아직 작성된 설문지가 없습니다.</p>
@@ -120,13 +122,13 @@ useEffect(()=>{
             const dDay = Math.ceil((new Date(survey.expire_at) - new Date()) / 86400000)
 
             return (
-            <div key={survey.survey_id} className={`p-4 bg-white border rounded-lg shadow ${expireDate?'border-rose-600 text-gray-300' : 'border border-blue-200'}`}>
+            <div key={survey.survey_id} className={`p-4 bg-white border rounded-lg shadow ${dDay<=0 ?'border-rose-600 text-gray-300' : expireDate ? 'border-rose-600' : 'border border-blue-200'}`}>
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold mb-2">{survey.title}</h3>
                 <button onClick={() => handleDeleteClick(survey.survey_id)} className="px-3 py-1 rounded-md hover:bg-gray-300"><MdOutlineDeleteForever /></button>
               </div>
               <div className="text-sm mb-4">
-                <span className={expireDate ? 'text-slate-300' : 'text-gray-500'}>생성일: {survey.created_at.split('T')[0]}</span><br/>
+                <span className={dDay <=0 && expireDate ? 'text-slate-300' : 'text-gray-500'}>생성일: {survey.created_at.split('T')[0]}</span><br/>
                 <span className={expireDate ? 'text-rose-400' : 'text-gray-500'}>마감일: {survey.expire_at.split('T')[0]} {dDay>0 ? `(D-${dDay})`:'(마감)'}</span>
               </div>
               <div className="flex justify-end space-x-2">
