@@ -13,7 +13,7 @@ export default function FormPreview({ formData }) {
         <div className="p-5 bg-gray-100 border border-gray-300 mb-5">
         <h1 className="text-3xl p-1.5 font-semibold mb-3 text-gray-800">{formData.title || "제목 없음"}</h1>
         <p className="space-y-3 p-1.5 text-gray-800 text-sm">{formData.description || ""}</p>
-        <button onClick={()=>navigate("/create")} className="pt-1.5 pr-1.5 pl-1.5 text-blue-600 hover:underline text-xs">돌아가기</button>
+        <button onClick={()=>navigate("/create")} className="pt-1.5 pr-1.5 pl-1.5 text-blue-600 hover:underline cursor-pointer text-xs">돌아가기</button>
         </div>
         
         {/* 질문 미리보기 */}

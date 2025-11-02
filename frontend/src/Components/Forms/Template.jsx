@@ -7,11 +7,11 @@ export default function Template({ formData, setFormData }) {
   // 템플릿 데이터
   const data={
     인적사항:[
-      {text: "이름을 입력해주세요", description: "이름", type: "단답형", is_required: true},
-      {text: "성별을 선택해주세요", description: "성별", type: "객관식", is_required: true, options: ["남성", "여성"]},
-      {text: "연령대를 선택해주세요", description: "나이",  type: "객관식", is_required: true, options: ["10대", "20대", "30대", "40대 이상"]},
-      {text: "주소를 입력해주세요", description: "주소", type: "단답형", is_required: false},
-      {text: "핸드폰 번호를 입력해주세요", description: "번호", type: "단답형", is_required: false}
+      {text: "이름을 입력해주세요.", description: "이름", type: "단답형", is_required: true},
+      {text: "성별을 선택해주세요.", description: "성별", type: "객관식", is_required: true, options: ["남성", "여성"]},
+      {text: "연령대를 선택해주세요.", description: "나이",  type: "객관식", is_required: true, options: ["10대", "20대", "30대", "40대 이상"]},
+      {text: "주소를 입력해주세요.", description: "주소", type: "단답형", is_required: false},
+      {text: "핸드폰 번호를 입력해주세요.", description: "번호", type: "단답형", is_required: false}
     ],
     
     고객만족도:[
@@ -22,16 +22,16 @@ export default function Template({ formData, setFormData }) {
     ],
 
     강의평가:[
-      {text: "강의 만족도를 평가해주세요", description: "만족도", type: "객관식", is_required: true, options: ["매우 만족", "만족", "불만족", "매우 불만족"]},
+      {text: "강의 만족도를 평가해주세요.", description: "만족도", type: "객관식", is_required: true, options: ["매우 만족", "만족", "불만족", "매우 불만족"]},
       {text: "강의 내용이 실무에 도움이 되었나요?", description: "강의내용", type: "객관식", is_required: true, options:["네", "아니요"]},
-      {text: "강의에 대한 추가 피드백을 작성해주세요", description: "피드백", type: "단답형", is_required: false}
+      {text: "강의에 대한 추가 피드백을 작성해주세요.", description: "피드백", type: "단답형", is_required: false}
     ],
 
     방문후기:[
-      {text: "방문하신 날짜를 입력해주세요", description: "방문일", type:"단답형", is_required: true},
+      {text: "방문하신 날짜를 입력해주세요.", description: "방문일", type:"단답형", is_required: true},
       {text: "매장 청결 상태는 어땠나요?", description:"청결", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족", "매우 불만족"]},
       {text: "직원의 친절도는 어땠나요?", description:"응대", type:"객관식", is_required: true, options:["매우 만족", "만족", "보통", "불만족", "매우 불만족"]},
-      {text: "방문 후 느낀 점을 작성해주세요", description: "재방문", type: "단답형", is_required: false},
+      {text: "방문 후 느낀 점을 작성해주세요.", description: "재방문", type: "단답형", is_required: false},
       {text: "주변 지인에게 이곳을 추천하고 싶나요?", description: "추천", type: "객관식", is_required: false, options:["추천함", "추천하지 않음"]}
     ]
     
@@ -45,20 +45,24 @@ export default function Template({ formData, setFormData }) {
 
   return (
     <div className="flex items-center justify-center m-30 bg-neutral-50">
-      <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-8 space-y-6 border border-gray-200">
-        <h1 className="text-3xl font-bold text-center mb-6">템플릿 선택</h1>
+      <div className="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-10 border border-slate-200 space-y-6">
+        <h1 className="text-xl font-normal text-center mb-6">템플릿 선택</h1>
 
         <div className="grid grid-cols-2 gap-6">
           {Object.keys(data).map((name)=>(
-            <div key={name} onClick={()=>select(name)} className="cursor-pointer border rounded-lg p-6 hover:bg-blue-50 flex flex-col text-center">
-              <h2 className="text-lg text-blue-700">{name}</h2>
-              <p className="text-xs text-gray-500 mt-2">{data[name].map(q=>(<span>{q.description}, </span>))}</p>
-              <p className="text-xs font-bold text-gray-500">총 {data[name].length}개의 질문 포함</p>
+            <div key={name} onClick={()=>select(name)} className="cursor-pointer border border-blue-200 rounded-lg p-6 hover:bg-blue-50 flex flex-col text-center">
+              <h2 className="text-base text-blue-800">{name}</h2>
+              <p className="text-xs text-gray-500 mb-1">
+                {data[name].map((q,i)=>(
+                  <span key={i}>{q.description}{i<data[name].length-1?', ':''}</span>
+                ))}
+              </p>
+              <p className="text-xs">총 {data[name].length}개의 질문 포함</p>
             </div>
           ))}
         </div>
         <div className="text-center">
-          <button onClick={()=>navigate("/create")} className="hover:bg-blue-50 text px-3 text-sm py-2 rounded-lg">돌아가기</button>
+          <button onClick={()=>navigate("/create")} className="hover:underline hover:text-blue-600 transition-colors duration-100 text px-3 text-sm py-2 cursor-pointer rounded-lg">돌아가기</button>
         </div>
       </div>
     </div>

@@ -21,10 +21,3 @@ class SurveyQuestionOut(SurveyQuestionBase):
 
     model_config = ConfigDict(from_attributes=True)
 
-# 질문 수정
-# class SurveyQuestionUpdate(BaseModel):
-#     question_text:Optional[str]=Field(None, max_length=500)
-#     question_type:Optional[QuestionType]=None
-
-
-
