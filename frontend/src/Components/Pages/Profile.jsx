@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import defaultProfile from '../../assets/defaultProfile.png';
 
 export default function Profile() {
 
@@ -10,18 +11,23 @@ export default function Profile() {
     password: ''
   });
   const [userId, setUserId] = useState(null);
-  const [profileImage, setProfileImage] = useState(null); //이미지를 위한 용도
+  const [profileImage, setProfileImage] = useState(defaultProfile); //이미지를 위한 용도
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate()
 
   useEffect(() => {
     // 로그인한 사용자 정보 가져오기
-    axios.get('http://localhost:8081/users/userme', {withCredentials: true})
+    axios.get('http://localhost:8081/users/profile', {withCredentials: true})
       .then(res => {
         setFormData({
           email: res.data.email,
           username: res.data.username,
           password: ''
         });
+        if(res.data.profile_image_url) {
+            setProfileImage(`http://localhost:8081${res.data.profile_image_url}`);
+          }
         setUserId(res.data.user_id); // user_id 저장
       })
   }, []);
@@ -32,8 +38,46 @@ export default function Profile() {
   };
 
   //이미지 변경하는 함수 필요
-  const handleImageChange = ()=>{
+  const handleImageChange = async () => {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    try {
+      setIsUploading(true);
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      await axios.post(
+        'http://localhost:8081/users/profile-image',
+        formData,
+        {
+          withCredentials: true,
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
+      
+      const res = await axios.get('http://localhost:8081/users/profile', {
+        withCredentials: true
+      });
+      
+      if (res.data.profile_image_url) {
+        setProfileImage(`http://localhost:8081${res.data.profile_image_url}`);
+      }
+      
+      alert('프로필 이미지가 변경되었습니다!');
+      window.location.reload();
+    } catch (err) {
+      console.error('업로드 실패:', err);
+      alert('이미지 업로드에 실패했습니다.');
+    } finally {
+      setIsUploading(false);
+      event.target.value = '';
+    }
+  };
 
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
   };
 
   const handleSubmit = async (e) => {
@@ -54,16 +98,12 @@ export default function Profile() {
 
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-md shadow-md flex gap-8">
-      {/* 이미지 변경 */}
       <div className="flex flex-col items-center w-1/3">
-        {/* 원형 이미지 박스 */}
-        <div className="w-40 h-40 mb-4 border rounded-full overflow-hidden bg-gray-100 flex items-start justify-center pt-4">
-        
+        <div className="w-40 h-40 mb-4 border rounded-full overflow-hidden bg-gray-100 flex items-start justify-center">
+          <img src={profileImage} alt="프로필" className="w-40 h-40 mb-4 border rounded-full overflow-hidden bg-gray-100 flex items-start justify-center" onClick={() => handleImageClick()} onError={(e) => {e.target.src = defaultProfile}}/>
         </div>
-        {/* 이미지 변경 버튼 */}
-        
       </div>
-
+      <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange}className="hidden"/>
       {/* 구분선 */}
       <div className="border-l border-gray-300 h-auto mx-4"></div>
 

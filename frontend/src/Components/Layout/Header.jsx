@@ -18,8 +18,11 @@ export default function Header() {
       (async () => {
         try{
           setIsLoggedIn(true);
-          const res = await axios.get(`http://localhost:8081/users/userme`, {withCredentials: true});
+          const res = await axios.get(`http://localhost:8081/users/profile`, {withCredentials: true});
           setUsername(res.data.username)
+          if(res.data.profile_image_url) {
+            setProfileImage(`http://localhost:8081${res.data.profile_image_url}`);
+          }
         } catch(err){
           console.error("정보 가져오기 실패:", err);
         }
@@ -36,12 +39,14 @@ export default function Header() {
       
       setIsLoggedIn(false);
       setUsername("");
+      setProfileImage(defaultProfile);
       alert('로그아웃 되었습니다.');
       navigate('/');
     } catch(err){
       // console.error("로그아웃 실패:", err);
       setIsLoggedIn(false);
       setUsername("");
+      setProfileImage(defaultProfile);
       alert('로그아웃 처리 중 오류가 발생했습니다.');
       navigate('/');
     }
@@ -56,7 +61,7 @@ export default function Header() {
           <nav className="flex items-center space-x-4">
             {isLoggedIn ? (
               <div className='flex items-center'>
-                <img src={profileImage} alt="프로필" className="w-5 h-5 rounded-full border object-cover cursor-pointer" onClick={()=>navigate('/profile')}/>
+                <img src={profileImage} alt="프로필" className="w-5 h-5 rounded-full border object-cover cursor-pointer" onClick={()=>navigate('/profile')} onError={(e) => {e.target.src = defaultProfile}}/>
                 <span className=" font-bold px-3 py-2 text-sm">{username}님</span>
                 <Link to="/my-surveys" className="hover:text-blue-600 font-medium px-3 py-2 text-sm">나의 설문</Link>
                 <button onClick={handleLogout} className="px-3 py-2 text-sm font-medium hover:text-blue-600 cursor-pointer">로그아웃</button>
