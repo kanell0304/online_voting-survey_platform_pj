@@ -71,9 +71,9 @@ useEffect(()=>{
   const [sortType, setSortType] = useState("created_at");
 
   const toggle =()=>{
-    setSortType(prev => {
-      if(prev === "created_at") return "title";
-      else if(prev === "title") return "expire_at";
+    setSortType(type=>{
+      if(type === "created_at") return "title";
+      else if(type === "title") return "expire_at";
       return "created_at";
     });
   };
@@ -102,8 +102,11 @@ useEffect(()=>{
             <p className="text-gray-500 col-span-full text-center py-8">아직 작성된 설문지가 없습니다.</p>
             ):(
           sortedSurveys.map(survey => {
+            const days = 3
+            const expireDate = (new Date(survey.expire_at) - new Date()) <= days * 86400000 //시,분,초,밀리초 곱한값
+            
             return (
-            <div key={survey.survey_id} className="p-4 bg-white border rounded-lg shadow">
+            <div key={survey.survey_id} className={`p-4 bg-white border rounded-lg shadow ${expireDate?'border-red-600' : 'border'}`}>
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold mb-2">{survey.title}</h3>
                 <button onClick={() => handleDeleteClick(survey.survey_id)} className="px-3 py-1 rounded-md hover:bg-gray-300"><MdOutlineDeleteForever /></button>
