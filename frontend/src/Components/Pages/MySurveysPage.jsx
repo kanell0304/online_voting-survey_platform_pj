@@ -94,7 +94,6 @@ useEffect(()=>{
 
             {/* 폼만들기, toggle */}
           <div className="w-full flex justify-between items-center mb-4">
-            <button onClick={handleCreateClick} className="px-4 py-1.5 text-sm font-medium text-blue-600 bg-blue-100 border border-blue-200 rounded-full hover:bg-blue-200 hover:text-blue-700 active:scale-95 transition-all duration-200">폼 만들기</button>
 
             <div className="inline-flex border border-gray-300 rounded-full overflow-hidden text-[11px]">
               <button className={`px-4 py-2 transition-colors duration-200 ${sortType==="created_at" ? "bg-blue-500 text-white"
@@ -107,7 +106,11 @@ useEffect(()=>{
               <div className="border-l border-dashed border-gray-300"></div> {/* 점선(구분선) */}
               <button className={`px-4 py-2 transition-colors duration-200 ${sortType === "expire_at" ? "bg-blue-500 text-white"
               :"bg-white text-gray-700 hover:bg-gray-100"} rounded-r-full`} onClick={() => setSortType("expire_at")}>마감일순</button>
+
             </div>
+
+            <button onClick={handleCreateClick} className="grid h-9 w-9 place-items-center rounded-xl bg-blue-500 cursor-pointer text-white shadow-sm
+               hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300">+</button>
           </div>
         </div>
 
